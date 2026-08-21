@@ -1,0 +1,15 @@
+{% set tip_label_text = tip_label|default(none, true) %}
+{% if tip_label_text %}
+<button
+  type="button"
+  data-tip="{{ tip_text }}"
+  class="shrink-0 rounded text-xs font-medium text-blue-600 transition hover:text-blue-800 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+>{{ tip_label_text }} ›</button>
+{% else %}
+<button
+  type="button"
+  data-tip="{{ tip_text }}"
+  aria-label="{{ tip_aria|default('適用される条件') }}"
+  class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-300 text-[11px] font-bold leading-none text-slate-500 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+>?</button>
+{% endif %}

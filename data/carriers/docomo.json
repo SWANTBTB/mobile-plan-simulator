@@ -1,0 +1,191 @@
+{
+  "id": "docomo",
+  "name": "docomo",
+  "display_order": 5,
+  "official_url": "https://www.docomo.ne.jp/charge/docomo_max/",
+  "updated_at": "2026-08-21",
+  "source_note": "ドコモ MAX / ドコモ ポイ活 MAX / ドコモ mini（4GB・10GB）。金額は税込（spモード330円含む）。",
+  "theme": {
+    "border": "border-carrier-docomo",
+    "bg": "bg-red-50"
+  },
+  "plans": [
+    {
+      "id": "docomo_max_1gb",
+      "name": "ドコモ MAX（〜1GB）",
+      "data_label": "〜1GB",
+      "data_gb_max": 1,
+      "base_price": 5698,
+      "voice_included": true,
+      "priority": 1,
+      "description": "利用量に応じて3段階で自動変動",
+      "everyone_docomo": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "docomo_max_3gb",
+      "name": "ドコモ MAX（〜3GB）",
+      "data_label": "〜3GB",
+      "data_gb_max": 3,
+      "base_price": 6798,
+      "voice_included": true,
+      "priority": 2,
+      "description": "利用量に応じて3段階で自動変動",
+      "everyone_docomo": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "docomo_max_unlimited",
+      "name": "ドコモ MAX（3GB超〜無制限）",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 8448,
+      "voice_included": true,
+      "priority": 3,
+      "description": "利用量に応じて3段階で自動変動",
+      "everyone_docomo": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "docomo_poikatsu_max",
+      "name": "ドコモ ポイ活 MAX",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 11748,
+      "voice_included": true,
+      "priority": 4,
+      "description": "d払い対象決済でポイント還元が上乗せされる無制限プラン",
+      "qr_reward": {
+        "wallet": "dbarai",
+        "wallet_label": "d払い",
+        "rates": {
+          "standard": { "percent": 3, "cap": 5000 },
+          "gold": { "percent": 5, "cap": 5000 },
+          "platinum": { "percent": 10, "cap": 5000 }
+        }
+      },
+      "everyone_docomo": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "docomo_mini",
+      "name": "ドコモ mini（4GB）",
+      "data_label": "4GB（キャンペーン中6GB）",
+      "data_gb_max": 4,
+      "effective_data_gb_max": 6,
+      "base_price": 2750,
+      "voice_included": true,
+      "priority": 5,
+      "description": "小容量向けプラン（2026年8月〜キャンペーンで6GBに増量）",
+      "everyone_docomo": {
+        "counts_toward_lines": true,
+        "applies_discount": false
+      }
+    },
+    {
+      "id": "docomo_mini_10gb",
+      "name": "ドコモ mini（10GB）",
+      "data_label": "10GB（キャンペーン中12GB）",
+      "data_gb_max": 10,
+      "effective_data_gb_max": 12,
+      "base_price": 3850,
+      "voice_included": true,
+      "priority": 6,
+      "description": "中容量向けプラン（2026年8月〜キャンペーンで12GBに増量）",
+      "everyone_docomo": {
+        "counts_toward_lines": true,
+        "applies_discount": false
+      }
+    }
+  ],
+  "legacy_plans": [
+    { "id": "eximo_1gb", "name": "eximo（〜1GB）", "base_price": 4565 },
+    { "id": "eximo_3gb", "name": "eximo（〜3GB）", "base_price": 5665 },
+    { "id": "eximo_unlimited", "name": "eximo（無制限）", "base_price": 7315 },
+    { "id": "irumo_05gb", "name": "irumo（0.5GB）", "base_price": 550 },
+    { "id": "irumo_3gb", "name": "irumo（3GB）", "base_price": 2167 },
+    { "id": "irumo_6gb", "name": "irumo（6GB）", "base_price": 2827 },
+    { "id": "irumo_9gb", "name": "irumo（9GB）", "base_price": 3377 },
+    { "id": "gigaho_premier", "name": "5Gギガホ プレミア", "base_price": 7315 },
+    { "id": "gigalight_1gb", "name": "5Gギガライト（〜1GB）", "base_price": 3465 },
+    { "id": "gigalight_7gb", "name": "5Gギガライト（〜7GB）", "base_price": 6765 },
+    { "id": "hajimete_smartphone", "name": "はじめてスマホプラン", "base_price": 1815 }
+  ],
+  "discounts": [
+    {
+      "id": "everyone_docomo",
+      "name": "みんなドコモ割",
+      "amount": 1210,
+      "line_tiers": [
+        { "min_lines": 3, "amount": 1210 },
+        { "min_lines": 2, "amount": 550 }
+      ],
+      "condition": "同一ファミリー割引グループ（2回線550円・3回線以上1,210円）",
+      "includes_primary_line": true,
+      "requirements": {
+        "min_lines": 2
+      }
+    },
+    {
+      "id": "d_card",
+      "name": "dカードお支払割",
+      "amount": 220,
+      "amount_tiers": {
+        "standard": 220,
+        "gold": 550,
+        "platinum": 550
+      },
+      "condition": "dカード支払い（一般220円・GOLD/PLATINUM 550円）"
+    },
+    {
+      "id": "docomo_hikari_set",
+      "name": "ドコモ光セット割",
+      "amount": 1210,
+      "condition": "ドコモ光/home 5Gセット"
+    },
+    {
+      "id": "docomo_denki_set",
+      "name": "ドコモでんきセット割",
+      "amount": 110,
+      "condition": "ドコモでんきセット契約（miniプランのみ）",
+      "requirements": {
+        "plan_ids": ["docomo_mini", "docomo_mini_10gb"]
+      }
+    },
+    {
+      "id": "long_term",
+      "name": "長期利用割",
+      "amount": 220,
+      "condition": "10年以上利用",
+      "requirements": {
+        "min_tenure_years": 10,
+        "exclude_plan_ids": ["docomo_mini", "docomo_mini_10gb"]
+      }
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "everyone_docomo",
+      "name": "みんなドコモ割",
+      "description": "家族・グループで最大1,210円割引"
+    },
+    {
+      "id": "d_card",
+      "name": "dカードお支払割",
+      "description": "dカード支払いで220〜550円割引"
+    },
+    {
+      "id": "docomo_hikari_set",
+      "name": "ドコモ光セット割",
+      "description": "ドコモ光/home 5Gセットで最大1,210円割引"
+    }
+  ]
+}

@@ -1,0 +1,284 @@
+{
+  "id": "au",
+  "name": "au",
+  "display_order": 3,
+  "official_url": "https://www.au.com/mobile/charge/smartphone/plan/",
+  "updated_at": "2026-08-21",
+  "source_note": "auバリューリンク / 使い放題MAX＋ / マネ活2 / スマホミニプラン＋。金額は税込。",
+  "theme": {
+    "border": "border-carrier-au",
+    "bg": "bg-orange-50"
+  },
+  "plan_comparison_notes": {
+    "title": "バリューリンクと使い放題MAX＋の違い",
+    "rows": [
+      {
+        "label": "バリューリンク",
+        "text": "Pontaパス（548円相当）込み。圏外・混雑時・海外もデータ使い放題（基本料8,008円）"
+      },
+      {
+        "label": "使い放題MAX＋",
+        "text": "基本料7,788円とやや安い。Pontaパスは別契約。au PAYカード割（220円）の対象"
+      }
+    ]
+  },
+  "plans": [
+    {
+      "id": "au_valuelink",
+      "name": "auバリューリンクプラン",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 8008,
+      "voice_included": true,
+      "priority": 1,
+      "auto_discount": 1650,
+      "auto_discount_label": "1GB以下利用時割引",
+      "auto_discount_max_data_gb": 1,
+      "description": "Pontaパス込み・圏外/混雑時/海外も使えるデータ使い放題プラン",
+      "bundled_services": [
+        { "name": "Pontaパス", "monthly_value": 548 }
+      ],
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "au_valuelink_moneyact2",
+      "name": "auバリューリンク マネ活2",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 9328,
+      "voice_included": true,
+      "priority": 2,
+      "auto_discount": 1650,
+      "auto_discount_label": "1GB以下利用時割引",
+      "auto_discount_max_data_gb": 1,
+      "description": "Pontaパス込み＋au PAY還元特典付きのデータ使い放題プラン",
+      "qr_reward": {
+        "wallet": "aupay",
+        "wallet_label": "au PAY",
+        "rates": {
+          "standard": { "percent": 1, "cap": 2500 },
+          "gold": { "percent": 5, "cap": 2500 }
+        },
+        "bill_payment_bonus": 550,
+        "deposit_bonus": 550
+      },
+      "bundled_services": [
+        { "name": "Pontaパス", "monthly_value": 548 }
+      ],
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": false
+      }
+    },
+    {
+      "id": "unlimited_max_plus",
+      "name": "使い放題MAX＋ 5G/4G",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 7788,
+      "voice_included": true,
+      "priority": 3,
+      "auto_discount": 1650,
+      "auto_discount_label": "1GB以下利用時割引",
+      "auto_discount_max_data_gb": 1,
+      "description": "データ通信使い放題プラン",
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "unlimited_max_moneyact2",
+      "name": "使い放題MAX＋ マネ活2",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 9108,
+      "voice_included": true,
+      "priority": 4,
+      "auto_discount": 1650,
+      "auto_discount_label": "1GB以下利用時割引",
+      "auto_discount_max_data_gb": 1,
+      "description": "au PAY利用でPontaポイント還元が上乗せされる無制限プラン",
+      "qr_reward": {
+        "wallet": "aupay",
+        "wallet_label": "au PAY",
+        "rates": {
+          "standard": { "percent": 1, "cap": 2500 },
+          "gold": { "percent": 5, "cap": 2500 }
+        },
+        "bill_payment_bonus": 550,
+        "deposit_bonus": 550
+      },
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": false
+      }
+    },
+    {
+      "id": "smart_mini_plus_1gb",
+      "name": "スマホミニプラン＋（〜1GB）",
+      "data_label": "〜1GB",
+      "data_gb_max": 1,
+      "base_price": 4928,
+      "voice_included": true,
+      "priority": 5,
+      "description": "利用量に応じて3段階で自動変動",
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "smart_mini_plus_3gb",
+      "name": "スマホミニプラン＋（〜3GB）",
+      "data_label": "〜3GB",
+      "data_gb_max": 3,
+      "base_price": 6578,
+      "voice_included": true,
+      "priority": 6,
+      "description": "利用量に応じて3段階で自動変動",
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "smart_mini_plus_5gb",
+      "name": "スマホミニプラン＋（〜5GB）",
+      "data_label": "〜5GB",
+      "data_gb_max": 5,
+      "base_price": 8228,
+      "voice_included": true,
+      "priority": 7,
+      "description": "利用量に応じて3段階で自動変動",
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "u18_value_3gb",
+      "name": "U18バリュープラン（〜3GB）",
+      "data_label": "〜3GB",
+      "data_gb_max": 3,
+      "base_price": 2398,
+      "voice_included": true,
+      "priority": 8,
+      "description": "5～18歳向けプラン（〜3GB）",
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": true,
+        "line_tiers": [
+          { "min_lines": 3, "amount": 550 },
+          { "min_lines": 2, "amount": 220 }
+        ]
+      }
+    },
+    {
+      "id": "u18_value_20gb",
+      "name": "U18バリュープラン（3GB超〜20GB）",
+      "data_label": "3GB超〜20GB",
+      "data_gb_max": 20,
+      "base_price": 4048,
+      "voice_included": true,
+      "priority": 9,
+      "description": "5～18歳向けプラン（3GB超〜20GB）",
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": true,
+        "line_tiers": [
+          { "min_lines": 3, "amount": 550 },
+          { "min_lines": 2, "amount": 220 }
+        ]
+      }
+    },
+    {
+      "id": "senior_value",
+      "name": "シニアバリュープラン",
+      "data_label": "5GB",
+      "data_gb_max": 5,
+      "base_price": 4048,
+      "voice_included": true,
+      "priority": 10,
+      "description": "60歳以上向けプラン（5分通話かけ放題込み）",
+      "family_plus": {
+        "counts_toward_lines": true,
+        "applies_discount": false
+      }
+    },
+    {
+      "id": "u12_value",
+      "name": "U12バリュープラン",
+      "data_label": "〜1GB",
+      "data_gb_max": 1,
+      "base_price": 1870,
+      "voice_included": true,
+      "priority": 11,
+      "description": "12歳以下向けプラン（家族割プラス対象外）",
+      "family_plus": {
+        "counts_toward_lines": false,
+        "applies_discount": false
+      }
+    }
+  ],
+  "legacy_plans": [
+    { "id": "use_max_5g", "name": "使い放題MAX 5G/4G", "base_price": 7238 },
+    { "id": "money_katsu", "name": "auマネ活プラン 5G", "base_price": 7788 },
+    { "id": "pitatto_1gb", "name": "ピタットプラン 5G（〜1GB）", "base_price": 3465 },
+    { "id": "pitatto_4gb", "name": "ピタットプラン 5G（〜4GB）", "base_price": 5115 },
+    { "id": "pitatto_7gb", "name": "ピタットプラン 5G（〜7GB）", "base_price": 6215 },
+    { "id": "smartphone_start", "name": "スマホスタートプラン 5G", "base_price": 3465 },
+    { "id": "shinryokin_flat7", "name": "auフラットプラン7プラス", "base_price": 5478 }
+  ],
+  "discounts": [
+    {
+      "id": "family_plus",
+      "name": "家族割プラス",
+      "amount": 1210,
+      "line_tiers": [
+        { "min_lines": 3, "amount": 1210 },
+        { "min_lines": 2, "amount": 660 }
+      ],
+      "condition": "家族2人以上（2人660円・3人以上1,210円）",
+      "includes_primary_line": true,
+      "requirements": {
+        "min_lines": 2
+      }
+    },
+    {
+      "id": "smart_value",
+      "name": "auスマートバリュー",
+      "amount": 1100,
+      "condition": "auひかり/ホームセット/auでんき"
+    },
+    {
+      "id": "au_pay_card",
+      "name": "au PAY カード割",
+      "amount": 220,
+      "condition": "au PAY カード支払い（マネ活2系プランは対象外）",
+      "requirements": {
+        "exclude_plan_ids": ["unlimited_max_moneyact2", "au_valuelink_moneyact2"]
+      }
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "smart_value",
+      "name": "auスマートバリュー",
+      "description": "auひかり等とのセットで最大1,100円割引"
+    },
+    {
+      "id": "family_plus",
+      "name": "家族割プラス",
+      "description": "家族加入で最大1,210円割引"
+    },
+    {
+      "id": "au_pay_card",
+      "name": "au PAY カード",
+      "description": "au PAY カード支払いで220円割引"
+    }
+  ]
+}

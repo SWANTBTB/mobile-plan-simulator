@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="{% block meta_description %}主要7ブランドの携帯料金を、請求額・還元込み実質・付帯サービス込みの3軸で比較する参考シミュレーター{% endblock %}"
+    />
+    {% if robots_noindex %}
+    <meta name="robots" content="noindex, nofollow" />
+    {% endif %}
+    <title>{% block title %}料金シミュレーター{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              carrier: {
+                softbank: "#00a0e9",
+                au: "#eb5505",
+                docomo: "#cc0033",
+                rakuten: "#bf0000",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    {% block head %}{% endblock %}
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-800">
+    {% block content %}{% endblock %}
+    {% include "components/site_footer.html" %}
+  </body>
+</html>

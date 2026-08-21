@@ -1,0 +1,28 @@
+<footer class="site-footer border-t border-slate-200 bg-white px-5 py-6 text-[12px] leading-relaxed text-slate-500 sm:px-8">
+  <div class="mx-auto max-w-[1560px] space-y-4">
+    <p>
+      <span class="font-semibold text-slate-700">料金情報：</span>{{ site_pricing_label }}の公式料金・提供条件を参照した参考値です。
+      シミュレーター結果は契約時の確定料金ではありません。実際の請求は割引条件・オプション・日割り等により異なる場合があります。
+    </p>
+    <p>
+      料金・割引・キャンペーン・還元条件は変更される場合があります。契約前に各社公式サイトで最新条件をご確認ください。
+      一部の期間限定キャンペーンや通常ポイント還元は計算に含まれない場合があります。
+    </p>
+    <p>
+      入力内容は料金計算のためにリクエスト時のみ利用し、サーバー側のデータベース等へ永続保存しません。
+      比較条件はブラウザの sessionStorage（タブを閉じると消える一時保存）にのみ保持されます。
+    </p>
+    {% if carrier_official_links %}
+    <div>
+      <p class="font-semibold text-slate-700">各社公式料金ページ</p>
+      <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+        {% for link in carrier_official_links %}
+        <li>
+          <a href="{{ link.url }}" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">{{ link.name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</footer>

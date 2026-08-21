@@ -1,0 +1,122 @@
+{
+  "id": "ymobile",
+  "name": "ワイモバイル",
+  "display_order": 2,
+  "parent_carrier": "softbank",
+  "official_url": "https://www.ymobile.jp/plan/",
+  "updated_at": "2026-08-21",
+  "source_note": "シンプル3プラン（2026年6月改定後）。金額は税込。",
+  "theme": {
+    "border": "border-pink-400",
+    "bg": "bg-pink-50"
+  },
+  "plans": [
+    {
+      "id": "simple3_s",
+      "name": "シンプル3 S",
+      "data_label": "5GB",
+      "data_gb_max": 5,
+      "base_price": 3278,
+      "voice_included": true,
+      "priority": 1,
+      "description": "小容量向けプラン"
+    },
+    {
+      "id": "simple3_m",
+      "name": "シンプル3 M",
+      "data_label": "30GB",
+      "data_gb_max": 30,
+      "base_price": 4378,
+      "voice_included": true,
+      "priority": 2,
+      "description": "中容量向けプラン"
+    },
+    {
+      "id": "simple3_l",
+      "name": "シンプル3 L",
+      "data_label": "35GB",
+      "data_gb_max": 35,
+      "base_price": 5478,
+      "voice_included": true,
+      "priority": 3,
+      "description": "10分かけ放題込み"
+    }
+  ],
+  "legacy_plans": [
+    { "id": "simple2_s", "name": "シンプル2 S", "base_price": 2365 },
+    { "id": "simple2_m", "name": "シンプル2 M", "base_price": 4015 },
+    { "id": "simple2_l", "name": "シンプル2 L", "base_price": 5115 },
+    { "id": "simple_s", "name": "シンプル S", "base_price": 2178 },
+    { "id": "simple_m", "name": "シンプル M", "base_price": 3278 },
+    { "id": "simple_l", "name": "シンプル L", "base_price": 4158 },
+    { "id": "smartphone_plan_r", "name": "スマホプランR", "base_price": 3680 }
+  ],
+  "discounts": [
+    {
+      "id": "hikari_set",
+      "name": "光セット割",
+      "amount": 1650,
+      "condition": "SoftBank光/Y!mobile Airセット（家族割引と併用不可）",
+      "exclusive_with": ["family_discount"]
+    },
+    {
+      "id": "family_discount",
+      "name": "家族割引",
+      "amount": 1100,
+      "condition": "2回線以上（光セット割と併用不可）",
+      "exclusive_with": ["hikari_set"],
+      "requirements": {
+        "min_lines": 2
+      }
+    },
+    {
+      "id": "senior_discount",
+      "name": "66歳以上割引",
+      "amount": 550,
+      "condition": "66歳以上・シンプル3 S",
+      "requirements": {
+        "age_min": 66,
+        "plan_ids": ["simple3_s"]
+      }
+    },
+    {
+      "id": "special_discount",
+      "name": "特別割引",
+      "amount": 220,
+      "condition": "2026年6月〜12月の期間限定",
+      "available_from": "2026-06-01",
+      "available_until": "2026-12-31"
+    },
+    {
+      "id": "paypay_card",
+      "name": "PayPayカード割",
+      "amount": 330,
+      "condition": "PayPayカード支払い（ゴールド割と併用不可）",
+      "exclusive_with": ["paypay_card_gold"]
+    },
+    {
+      "id": "paypay_card_gold",
+      "name": "PayPayカード ゴールド割",
+      "amount": 550,
+      "condition": "PayPayカード ゴールド支払い（通常カード割と併用不可）",
+      "exclusive_with": ["paypay_card"]
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "hikari_set",
+      "name": "光セット割",
+      "description": "SoftBank光等とのセットで最大1,650円割引"
+    },
+    {
+      "id": "family_discount",
+      "name": "家族割引",
+      "description": "M/Lプランで最大1,100円割引"
+    },
+    {
+      "id": "paypay_card",
+      "name": "PayPayカード割",
+      "description": "PayPayカード支払いで330円割引"
+    }
+  ]
+}

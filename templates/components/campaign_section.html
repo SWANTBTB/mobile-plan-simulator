@@ -1,0 +1,28 @@
+<section class="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm lg:col-span-4">
+
+  {% with step=2, title="プラン・割引", description="左のタブで選んだ回線のプランと割引を設定します" %}
+
+    {% include "components/section_header.html" %}
+
+  {% endwith %}
+
+
+
+  <div id="campaign-panels" class="simulator-panel-scroll flex flex-1 flex-col space-y-4 overflow-y-auto p-5 sm:p-6 lg:min-h-0 lg:space-y-3 lg:p-4">
+
+    {% for line in lines %}
+
+      {% set line_index = loop.index0 %}
+
+      {% set line_carrier_id = line.carrier or 'softbank' %}
+
+      {% set carrier = carrier_map[line_carrier_id] %}
+
+      {% include "components/line_campaign_panel.html" %}
+
+    {% endfor %}
+
+  </div>
+
+</section>
+

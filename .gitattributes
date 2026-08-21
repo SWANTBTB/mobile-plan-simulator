@@ -1,0 +1,16 @@
+# 改行コードをリポジトリ内で LF に統一する（Windows で編集しても差分ノイズを出さない）
+* text=auto eol=lf
+
+*.py    text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+
+# バッチファイルは cmd.exe の互換性のため CRLF を維持する
+*.bat   text eol=crlf
+
+*.png   binary
+*.jpg   binary
+*.ico   binary

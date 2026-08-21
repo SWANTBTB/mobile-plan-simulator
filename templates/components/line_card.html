@@ -1,0 +1,311 @@
+{% set prefix = "lines[" ~ line_index ~ "]" %}
+
+{% set usage_is_unlimited = line.data_usage == "unlimited" %}
+
+{% set line_result = comparison.lines[line_index] if comparison.lines|length > line_index else none %}
+
+{% set line_carrier_id = line.carrier or 'softbank' %}
+
+{% set line_carrier_ui = carrier_ui.get(line_carrier_id, {}) %}
+
+
+
+<article
+
+  data-line-card="{{ line_index }}"
+
+  class="rounded-xl border px-4 py-4 sm:px-5 {% if line_index == 0 %}border-blue-200 bg-blue-50/40{% else %}border-slate-200 bg-white{% endif %}{% if line_index != active_line_index %} hidden{% endif %}"
+
+>
+
+  <div class="mb-2 flex items-start justify-between gap-2">
+
+    <div class="flex flex-wrap items-center gap-2">
+
+      <span class="text-[15px] font-semibold text-slate-900">回線{{ line_index + 1 }}</span>
+
+      {% if line_index == 0 %}
+
+      <span class="rounded-full bg-blue-100 px-2.5 py-0.5 text-[11px] font-semibold text-blue-800">主回線</span>
+
+      {% endif %}
+
+      {% if line_result %}
+
+      <span class="line-card-total" data-line-total="{{ line_index }}">{{ "{:,}".format(line_result.value_adjusted_total) }}円/月</span>
+
+      {% else %}
+
+      <span class="line-card-total" data-line-total="{{ line_index }}"></span>
+
+      {% endif %}
+
+    </div>
+
+    {% if line_index > 0 %}
+
+    <button type="button" data-remove-line="{{ line_index }}" class="shrink-0 rounded-md px-2 py-1 text-[13px] font-medium text-red-600 hover:bg-red-50">削除</button>
+
+    {% endif %}
+
+  </div>
+
+
+
+  <div class="mb-4">
+
+    <p class="{{ label_class }}">携帯会社</p>
+
+    <div class="carrier-grid grid grid-cols-3 gap-1.5">
+
+      {% for carrier in carriers %}
+
+      <label class="cursor-pointer">
+
+        <input
+
+          type="radio"
+
+          name="{{ prefix }}[carrier]"
+
+          value="{{ carrier.id }}"
+
+          {% if line_carrier_id == carrier.id %}checked{% endif %}
+
+          class="peer sr-only"
+
+        />
+
+        <span class="border border-slate-300 bg-white font-medium text-slate-700 transition hover:border-slate-400 peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:font-semibold peer-checked:text-white">
+
+          {{ carrier.name }}
+
+        </span>
+
+      </label>
+
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+
+
+  <div class="grid grid-cols-2 gap-4">
+
+    <div>
+
+      <label class="{{ label_class }}" for="line-{{ line_index }}-age">年齢</label>
+
+      <div class="input-with-unit">
+
+        <input id="line-{{ line_index }}-age" type="number" name="{{ prefix }}[age]" min="0" max="120" placeholder="35" value="{{ line.age or '' }}" class="{{ field_class }}" />
+
+        <span class="input-unit">歳</span>
+
+      </div>
+
+    </div>
+
+    <div>
+
+      <label class="{{ label_class }}" for="line-{{ line_index }}-data">データ使用量</label>
+
+      <div class="flex items-center gap-2">
+
+        <div class="input-with-unit min-w-0 flex-1">
+
+          <input
+
+            id="line-{{ line_index }}-data"
+
+            type="number"
+
+            name="{{ prefix }}[data_usage]"
+
+            min="0"
+
+            max="10000"
+
+            placeholder="10"
+
+            value="{{ '' if usage_is_unlimited else line.data_usage|replace('gb', '') }}"
+
+            {% if usage_is_unlimited %}disabled{% endif %}
+
+            class="{{ field_class }}"
+
+          />
+
+          <span class="input-unit">GB</span>
+
+        </div>
+
+        <label class="inline-flex shrink-0 cursor-pointer items-center gap-1.5 text-[12px] text-slate-600">
+
+          <input type="checkbox" name="{{ prefix }}[data_unlimited]" value="1" {% if usage_is_unlimited %}checked{% endif %} class="rounded border-slate-300 text-blue-600" data-line-unlimited="{{ line_index }}" />
+
+          無制限
+
+        </label>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <details class="advanced-details mt-4" data-advanced-details="line-{{ line_index }}">
+    <summary class="advanced-details__summary">
+      <span class="advanced-details__title">詳細条件（任意）</span>
+      <span class="advanced-details__hint">カード・決済・セット割などの詳細条件</span>
+    </summary>
+    <div class="advanced-details__body mt-3 space-y-1">
+      <p class="text-[12px] leading-relaxed text-slate-500">カード・固定回線・ポイント利用などを設定すると、より実際の料金に近い比較ができます</p>
+      <div data-line-payment-sections>
+
+  {% set paypay_tier = line.paypay_card_tier or ('gold' if line.paypay_gold else '') %}
+
+  <div class="mt-4 space-y-2{% if not line_carrier_ui.get('paypay_card_section') %} hidden{% endif %}" data-ui-section="paypay_card">
+
+    <p class="text-[14px] font-semibold text-slate-600">PayPayカード（{{ carriers | selectattr('id', 'equalto', line_carrier_id) | map(attribute='name') | first or 'この回線' }}）</p>
+
+    <select name="{{ prefix }}[paypay_card_tier]" class="{{ field_class }} text-[13px]{% if not line_carrier_ui.get('paypay_card_tier') %} hidden{% endif %}" data-ui-field="paypay_card_tier">
+
+      <option value="" {% if not paypay_tier %}selected{% endif %}>未利用</option>
+
+      <option value="standard" {% if paypay_tier == 'standard' %}selected{% endif %}>ノーマル（330円/月割引）</option>
+
+      <option value="gold" {% if paypay_tier == 'gold' %}selected{% endif %}>ゴールド（550円/月割引）</option>
+
+    </select>
+
+    <label class="mt-2 flex items-center gap-1.5 text-[12px] text-slate-600{% if not line_carrier_ui.get('paypay_gold_linked') %} hidden{% endif %}" data-ui-field="paypay_gold_linked">
+
+      <input type="checkbox" name="{{ prefix }}[paypay_gold_linked]" value="1" {% if line.paypay_gold_linked %}checked{% endif %} class="rounded border-slate-300 text-blue-600" />
+
+      PayPayカード ゴールドをPayPayアプリに連携済み
+
+    </label>
+
+  </div>
+
+
+
+  <div class="mt-4 space-y-3{% if not line_carrier_ui.get('qr_section') %} hidden{% endif %}" data-ui-section="qr">
+
+    <p class="text-[14px] font-semibold text-slate-600">QR決済（この回線）</p>
+
+    <div class="grid grid-cols-1 gap-4">
+
+      <div{% if not line_carrier_ui.get('qr_paypay') %} class="hidden"{% endif %} data-ui-field="qr_paypay">
+
+        <label class="{{ label_class }}">PayPay</label>
+
+        <div class="input-with-unit">
+
+          <input type="number" name="{{ prefix }}[qr_paypay]" min="0" max="1000000" step="1000" placeholder="30000" value="{{ line.qr_paypay or '' }}" class="{{ field_class }}" />
+
+          <span class="input-unit">円</span>
+
+        </div>
+
+      </div>
+
+      <div{% if not line_carrier_ui.get('qr_dbarai') %} class="hidden"{% endif %} data-ui-field="qr_dbarai">
+
+        <label class="{{ label_class }}">d払い</label>
+
+        <div class="input-with-unit">
+
+          <input type="number" name="{{ prefix }}[qr_dbarai]" min="0" max="1000000" step="1000" placeholder="30000" value="{{ line.qr_dbarai or '' }}" class="{{ field_class }}" />
+
+          <span class="input-unit">円</span>
+
+        </div>
+
+        <select name="{{ prefix }}[dcard_tier]" class="{{ field_class }} mt-2 text-[13px]{% if not line_carrier_ui.get('dcard_tier') %} hidden{% endif %}" data-ui-field="dcard_tier">
+
+          <option value="standard" {% if (line.dcard_tier or 'standard') == 'standard' %}selected{% endif %}>dカード一般</option>
+
+          <option value="gold" {% if line.dcard_tier == 'gold' %}selected{% endif %}>GOLD</option>
+
+          <option value="platinum" {% if line.dcard_tier == 'platinum' %}selected{% endif %}>PLATINUM</option>
+
+        </select>
+
+        <label class="mt-2 flex items-center gap-1.5 text-[12px] text-slate-600{% if not line_carrier_ui.get('docomo_bill_dcard') %} hidden{% endif %}" data-ui-field="docomo_bill_dcard">
+
+          <input type="checkbox" name="{{ prefix }}[docomo_bill_dcard]" value="1" {% if line.docomo_bill_dcard %}checked{% endif %} class="rounded border-slate-300 text-blue-600" />
+
+          通信料をdカードで支払い
+
+        </label>
+
+      </div>
+
+      <div{% if not line_carrier_ui.get('qr_aupay') %} class="hidden"{% endif %} data-ui-field="qr_aupay">
+
+        <label class="{{ label_class }}">au PAY</label>
+
+        <div class="input-with-unit">
+
+          <input type="number" name="{{ prefix }}[qr_aupay]" min="0" max="1000000" step="1000" placeholder="30000" value="{{ line.qr_aupay or '' }}" class="{{ field_class }}" />
+
+          <span class="input-unit">円</span>
+
+        </div>
+
+        <label class="mt-2 flex items-center gap-1.5 text-[12px] text-slate-600{% if not line_carrier_ui.get('aupay_gold') %} hidden{% endif %}" data-ui-field="aupay_gold">
+
+          <input type="checkbox" name="{{ prefix }}[aupay_gold]" value="1" {% if line.aupay_gold %}checked{% endif %} class="rounded border-slate-300 text-blue-600" />
+
+          ゴールド
+
+        </label>
+
+        <select name="{{ prefix }}[au_bill_payment_mode]" class="{{ field_class }} mt-2 text-[13px]{% if not line_carrier_ui.get('au_bill_payment_mode') %} hidden{% endif %}" data-ui-field="au_bill_payment_mode">
+
+          <option value="other" {% if (line.au_bill_payment_mode or 'other') == 'other' %}selected{% endif %}>通信料支払特典：該当なし</option>
+
+          <option value="au_pay_card" {% if line.au_bill_payment_mode == 'au_pay_card' %}selected{% endif %}>au PAYカードで通信料支払い</option>
+
+          <option value="au_jibun_bank_direct_debit" {% if line.au_bill_payment_mode == 'au_jibun_bank_direct_debit' %}selected{% endif %}>auじぶん銀行口座振替</option>
+
+        </select>
+
+        <label class="mt-2 flex items-center gap-1.5 text-[12px] text-slate-600{% if not line_carrier_ui.get('au_pay_card_bank_is_jibun') %} hidden{% endif %}" data-ui-field="au_pay_card_bank_is_jibun">
+
+          <input type="checkbox" name="{{ prefix }}[au_pay_card_bank_is_jibun]" value="1" {% if line.au_pay_card_bank_is_jibun %}checked{% endif %} class="rounded border-slate-300 text-blue-600" />
+
+          au PAYカードの引落口座がauじぶん銀行
+
+        </label>
+
+        <div{% if not line_carrier_ui.get('au_jibun_bank_balance') %} class="hidden"{% endif %} data-ui-field="au_jibun_bank_balance">
+
+          <label class="{{ label_class }} mt-2">auじぶん銀行 普通預金残高</label>
+
+          <div class="input-with-unit">
+
+            <input type="number" name="{{ prefix }}[au_jibun_bank_balance]" min="0" max="10000000" step="10000" placeholder="500000" value="{{ line.au_jibun_bank_balance or '' }}" class="{{ field_class }}" />
+
+            <span class="input-unit">円</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+  </details>
+
+</article>
+

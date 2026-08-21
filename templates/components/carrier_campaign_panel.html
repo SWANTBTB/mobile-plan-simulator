@@ -1,0 +1,112 @@
+<div
+  data-carrier-panel="{{ carrier.id }}"
+  class="rounded-lg border border-slate-200 p-4"
+>
+  <div class="mb-3 flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+    <h3 class="text-[15px] font-bold text-slate-900">{{ carrier.name }}</h3>
+    <a
+      href="{{ carrier.official_url }}"
+      target="_blank"
+      rel="noopener"
+      class="shrink-0 text-xs text-blue-600 transition hover:text-blue-800 hover:underline"
+    >公式サイト ›</a>
+  </div>
+
+  <div data-carrier-plans class="mb-4">
+    <div class="mb-2 flex items-center justify-between gap-2">
+      <p class="text-[13px] font-semibold text-slate-600">料金プラン</p>
+      <button
+        type="button"
+        data-auto-plan="{{ carrier.id }}"
+        class="text-xs font-medium text-blue-600 transition hover:text-blue-800 hover:underline{% if not plan_manual %} hidden{% endif %}"
+      >
+        自動選択に戻す
+      </button>
+    </div>
+    <div class="space-y-1.5">
+      {% for plan in carrier.plans %}
+      {% set is_selected_plan = selected_plan_id == plan.id %}
+      {% set is_manual_plan = is_selected_plan and plan_manual %}
+      <label
+        data-plan-row="{{ carrier.id }}:{{ plan.id }}"
+        data-plan-carrier="{{ carrier.id }}"
+        data-plan-id="{{ plan.id }}"
+        class="flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 {% if is_selected_plan %}border-blue-200 bg-blue-50{% else %}border-slate-200 bg-white{% endif %}"
+      >
+        <input
+          type="radio"
+          name="plans[{{ carrier.id }}]"
+          value="{{ plan.id }}"
+          {% if is_manual_plan %}checked{% endif %}
+          class="peer sr-only"
+        />
+        <span
+          data-plan-marker
+          class="h-2 w-2 shrink-0 rounded-full {% if is_selected_plan %}bg-blue-600{% else %}bg-slate-300{% endif %}"
+        ></span>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-slate-800" data-tip="{{ plan.name }}">{{ plan.name }}</p>
+          {% if plan.data_label %}
+          <p class="text-xs text-slate-500">{{ plan.data_label }}</p>
+          {% endif %}
+        </div>
+        <span data-plan-auto-badge class="shrink-0 rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-blue-700{% if not is_selected_plan or is_manual_plan %} hidden{% endif %}">自動</span>
+        <span data-plan-manual-badge class="shrink-0 rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] font-bold text-white{% if not is_manual_plan %} hidden{% endif %}">選択中</span>
+        <span data-plan-short-badge class="hidden shrink-0 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-800">容量不足</span>
+        <span class="shrink-0 text-right">
+          <span class="block text-sm font-bold text-slate-900">{{ "{:,}".format(plan.base_price) }}円</span>
+          <span data-plan-effective class="hidden text-[10px] font-medium text-emerald-700"></span>
+        </span>
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <p class="mb-2 text-[13px] font-semibold text-slate-600">割引</p>
+  <div class="space-y-1.5">
+    {% if carrier.discounts %}
+    {% for discount in carrier.discounts %}
+    {% set eligible = carrier_eligibility.get(discount.id, True) %}
+    {% set home_set_group = home_set_discount_groups.get(carrier.id ~ ':' ~ discount.id) %}
+    <div
+      data-discount-row="{{ carrier.id }}:{{ discount.id }}"
+      {% if home_set_group %}data-home-set-group="{{ home_set_group }}"{% endif %}
+      class="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2.5{% if not eligible %} opacity-50{% endif %}"
+    >
+      <label class="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5">
+        <input
+          type="checkbox"
+          name="discounts[{{ carrier.id }}]"
+          value="{{ discount.id }}"
+          {% if discount.id in selected_discounts %}checked{% endif %}
+          {% if not eligible %}disabled{% endif %}
+          class="h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-300"
+        />
+        <span class="min-w-0 truncate text-sm text-slate-800" data-tip="{{ discount.name }}">{{ discount.name }}</span>
+      </label>
+      <span
+        data-home-set-badge
+        class="hidden shrink-0 rounded bg-sky-100 px-1.5 py-0.5 text-[11px] font-semibold text-sky-800"
+      >光セット連動</span>
+      <span
+        data-ineligible-badge
+        class="shrink-0 rounded bg-slate-200 px-1.5 py-0.5 text-[11px] font-semibold text-slate-600{% if eligible %} hidden{% endif %}"
+      >対象外</span>
+      <span
+        data-discount-amount
+        class="shrink-0 text-sm font-semibold text-emerald-700"
+      >
+        -{{ "{:,}".format(carrier_discount_amounts.get(discount.id, discount.amount)) }}円/月
+      </span>
+      {% with tip_text="適用される条件：" ~ (discount.condition or "条件の記載がありません") %}
+        {% include "components/help_tip.html" %}
+      {% endwith %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-500">
+      定額プランのため割引なし
+    </p>
+    {% endif %}
+  </div>
+</div>

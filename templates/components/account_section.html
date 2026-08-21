@@ -1,0 +1,209 @@
+{% set field_class = "h-11 w-full max-w-full rounded-lg border border-slate-300 bg-white px-3 text-[14px] text-slate-800 transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400" %}
+
+{% set label_class = "mb-1.5 block text-[14px] font-semibold text-slate-600" %}
+
+<section class="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm lg:col-span-4">
+
+  {% with step=1, title="契約・回線", description="回線条件とデータ量を入力すれば、すぐに比較できます" %}
+    {% include "components/section_header.html" %}
+  {% endwith %}
+
+  <input type="hidden" name="active_line" id="active-line-input" value="{{ active_line_index }}" />
+
+  <div class="simulator-panel-scroll flex flex-1 flex-col space-y-6 overflow-y-auto p-5 sm:p-6 lg:min-h-0 lg:space-y-4 lg:p-4">
+
+    <div class="flex flex-1 flex-col">
+
+      <div class="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+        <h3 class="text-[16px] font-semibold text-slate-900">回線</h3>
+        <button
+          type="button"
+          id="add-line-button"
+          class="shrink-0 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-[13px] font-semibold leading-none text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+        >+ 回線を追加</button>
+      </div>
+
+      {% set line_tab_count = lines|length %}
+      {% set line_tabs_dense = line_tab_count > 5 %}
+      {% set line_tab_columns = 5 if line_tabs_dense else line_tab_count %}
+
+      <div id="line-tabs" class="mb-3{% if line_tabs_dense %} line-tabs--dense{% endif %}" style="--line-tab-columns: {{ line_tab_columns }}">
+        {% for line in lines %}
+        {% set tab_carrier_id = line.carrier or 'softbank' %}
+        {% set tab_carrier = carrier_map[tab_carrier_id] %}
+        <button
+          type="button"
+          data-line-tab="{{ loop.index0 }}"
+          title="{% if loop.index0 == 0 %}主回線{% else %}{{ loop.index0 + 1 }}回線目{% endif %} · {{ tab_carrier.name }}"
+          class="line-tab-btn {% if active_line_index == loop.index0 %}line-tab-btn--active{% else %}line-tab-btn--idle{% endif %}"
+        ><span class="line-tab-btn__label">{% if line_tabs_dense and loop.index0 > 0 %}{{ loop.index0 + 1 }}{% elif loop.index0 == 0 %}主回線{% else %}{{ loop.index0 + 1 }}回線目{% endif %}</span><span class="line-tab-btn__carrier">{{ tab_carrier.name }}</span></button>
+        {% endfor %}
+      </div>
+
+      <p class="line-tabs-help mb-4 text-[12px] leading-relaxed text-slate-500 lg:mb-3 lg:hidden">
+        1回線目は<strong class="font-semibold text-slate-700">主回線</strong>です。タブで回線を切り替えて入力します。家族割の条件はキャリアごとに異なります（ワイモバイルのみ主回線は対象外）。
+      </p>
+
+      <div id="lines-container">
+        {% for line in lines %}
+          {% set line_index = loop.index0 %}
+          {% include "components/line_card.html" %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="rounded-lg border border-slate-200 border-l-4 border-l-amber-400 bg-amber-50/50 p-4">
+      <h3 class="mb-3 text-[16px] font-semibold text-slate-900">現在の月額（任意）</h3>
+      <div class="space-y-3">
+        <div>
+          <label for="input-current-price" class="{{ label_class }}">実際の月額</label>
+          <p class="mt-0.5 text-[12px] leading-relaxed text-slate-500">
+            ※複数回線の場合は世帯合計を入力してください
+          </p>
+          <div class="input-with-unit">
+            <input
+              id="input-current-price"
+              type="number"
+              name="current_price"
+              min="0"
+              max="1000000"
+              placeholder="6000"
+              value="{{ selected_current_price or '' }}"
+              class="{{ field_class }}"
+            />
+            <span class="input-unit">円</span>
+          </div>
+        </div>
+
+        <p
+          id="current-hint"
+          role="status"
+          class="rounded-md bg-amber-100 px-2.5 py-1.5 text-[12px] font-medium leading-snug text-amber-900{% if not (selected_current_carrier and not selected_current_plan and not selected_current_price) %} hidden{% endif %}"
+        >
+          プランまたは実際の月額を入力すると差額を表示します
+        </p>
+
+        <p class="text-[12px] leading-relaxed text-slate-500">
+          月額を入力するとプラン定価より優先します。請求書の金額を入れると正確に比較できます。
+        </p>
+        <p class="text-[12px] leading-relaxed text-slate-500">
+          ※端末代金や一時的な請求を除いた、毎月の通信料金を入力してください
+        </p>
+      </div>
+    </div>
+
+    <details class="advanced-details" data-advanced-details="account">
+      <summary class="advanced-details__summary">
+        <span class="advanced-details__title">詳細条件（任意）</span>
+        <span class="advanced-details__hint">カード・固定回線・ポイント利用などを設定すると、より実際の料金に近い比較ができます</span>
+      </summary>
+      <div class="advanced-details__body space-y-6">
+        <div>
+          <h3 class="mb-3 border-b border-slate-100 pb-2 text-[16px] font-semibold text-slate-900">契約共通</h3>
+
+          <div class="mt-3{% if not account_ui.get('tenure_years') %} hidden{% endif %}" data-ui-field="tenure_years">
+            <label for="input-tenure-years" class="{{ label_class }}">同一キャリアの利用年数（任意）</label>
+            <div class="input-with-unit">
+              <input
+                id="input-tenure-years"
+                type="number"
+                name="tenure_years"
+                min="0"
+                max="100"
+                placeholder="12"
+                value="{{ tenure_years or '' }}"
+                class="{{ field_class }}"
+              />
+              <span class="input-unit">年</span>
+            </div>
+          </div>
+
+          <div class="mt-4 space-y-2{% if not account_ui.get('home_set_section') %} hidden{% endif %}" data-ui-section="home_set">
+            <p class="text-[14px] font-semibold text-slate-600">セット割</p>
+            <p class="text-[13px] font-semibold text-slate-600">自宅の光回線（セット割）</p>
+            <label class="flex cursor-pointer items-start gap-2.5 rounded-lg border border-slate-200 px-3 py-3 transition hover:border-slate-300{% if not account_ui.get('home_set_softbank') %} hidden{% endif %}" data-ui-field="home_set_softbank">
+              <input type="checkbox" name="home_set_softbank" value="1" {% if selected_home_set_softbank %}checked{% endif %} class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-300" />
+              <span>
+                <span class="block text-[14px] font-medium text-slate-800">SoftBank光 / SoftBank Air</span>
+                <span class="block text-[12px] leading-relaxed text-slate-500">SoftBank・ワイモバイルのセット割を自動適用</span>
+              </span>
+            </label>
+            <label class="flex cursor-pointer items-start gap-2.5 rounded-lg border border-slate-200 px-3 py-3 transition hover:border-slate-300{% if not account_ui.get('home_set_au') %} hidden{% endif %}" data-ui-field="home_set_au">
+              <input type="checkbox" name="home_set_au" value="1" {% if selected_home_set_au %}checked{% endif %} class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-300" />
+              <span>
+                <span class="block text-[14px] font-medium text-slate-800">auひかり / ホームセット / auでんき</span>
+                <span class="block text-[12px] leading-relaxed text-slate-500">au・UQ mobileのセット割を自動適用</span>
+              </span>
+            </label>
+            <label class="flex cursor-pointer items-start gap-2.5 rounded-lg border border-slate-200 px-3 py-3 transition hover:border-slate-300{% if not account_ui.get('home_set_docomo') %} hidden{% endif %}" data-ui-field="home_set_docomo">
+              <input type="checkbox" name="home_set_docomo" value="1" {% if selected_home_set_docomo %}checked{% endif %} class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-300" />
+              <span>
+                <span class="block text-[14px] font-medium text-slate-800">ドコモ光 / home 5G</span>
+                <span class="block text-[12px] leading-relaxed text-slate-500">docomoのセット割を自動適用</span>
+              </span>
+            </label>
+            <label class="flex cursor-pointer items-start gap-2.5 rounded-lg border border-slate-200 px-3 py-3 transition hover:border-slate-300{% if not account_ui.get('home_set_docomo_denki') %} hidden{% endif %}" data-ui-field="home_set_docomo_denki">
+              <input type="checkbox" name="home_set_docomo_denki" value="1" {% if selected_home_set_docomo_denki %}checked{% endif %} class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-300" />
+              <span>
+                <span class="block text-[14px] font-medium text-slate-800">ドコモでんきセット</span>
+                <span class="block text-[12px] leading-relaxed text-slate-500">docomo mini向けセット割（−110円）を自動適用</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="mb-3 text-[16px] font-semibold text-slate-900">現在の契約（補助）</h3>
+          <div class="space-y-3">
+            <div>
+              <label for="input-current-carrier" class="{{ label_class }}">利用中の会社</label>
+              <select id="input-current-carrier" name="current_carrier" class="{{ field_class }}">
+                <option value="">選択してください</option>
+                {% for carrier in carriers %}
+                <option value="{{ carrier.id }}" {% if selected_current_carrier == carrier.id %}selected{% endif %}>
+                  {{ carrier.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div>
+              <label for="input-current-plan" class="{{ label_class }}">現在のプラン</label>
+              <select
+                id="input-current-plan"
+                name="current_plan"
+                class="{{ field_class }}"
+                {% if not selected_current_carrier %}disabled{% endif %}
+              >
+                <option value="">選択してください</option>
+                {% for carrier in carriers %}
+                {% for group_label, plans in [("現行プラン", carrier.plans), ("提供終了・旧プラン", carrier.get("legacy_plans", []))] %}
+                {% if plans %}
+                <optgroup
+                  label="{{ carrier.name }}｜{{ group_label }}"
+                  data-carrier="{{ carrier.id }}"
+                  {% if selected_current_carrier != carrier.id %}hidden{% endif %}
+                >
+                  {% for plan in plans %}
+                  <option
+                    value="{{ plan.id }}"
+                    data-carrier="{{ carrier.id }}"
+                    {% if selected_current_carrier != carrier.id %}hidden{% endif %}
+                    {% if selected_current_carrier == carrier.id and selected_current_plan == plan.id %}selected{% endif %}
+                  >
+                    {{ plan.name }}（{{ "{:,}".format(plan.base_price) }}円）
+                  </option>
+                  {% endfor %}
+                </optgroup>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+  </div>
+</section>

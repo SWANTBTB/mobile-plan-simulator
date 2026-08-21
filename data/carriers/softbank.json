@@ -1,0 +1,159 @@
+{
+  "id": "softbank",
+  "name": "SoftBank",
+  "display_order": 1,
+  "official_url": "https://www.softbank.jp/mobile/price_plan/",
+  "updated_at": "2026-08-21",
+  "source_note": "2026年6月提供開始の新料金プラン。金額は税込。",
+  "theme": {
+    "border": "border-carrier-softbank",
+    "bg": "bg-blue-50"
+  },
+  "plans": [
+    {
+      "id": "paytoku2",
+      "name": "ペイトク2",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 10538,
+      "voice_included": true,
+      "priority": 1,
+      "description": "PayPayポイント還元強化型の無制限プラン",
+      "family_discount": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      },
+      "qr_reward": {
+        "wallet": "paypay",
+        "wallet_label": "PayPay",
+        "rates": {
+          "standard": { "percent": 5, "cap": 3000 },
+          "gold": { "percent": 10, "cap": 4000 }
+        }
+      }
+    },
+    {
+      "id": "teigaku_unlimited",
+      "name": "テイガク無制限",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 8008,
+      "voice_included": true,
+      "priority": 2,
+      "description": "データ使い放題の定額プラン",
+      "family_discount": {
+        "counts_toward_lines": true,
+        "applies_discount": true
+      }
+    },
+    {
+      "id": "minifit2_2gb",
+      "name": "ミニフィット2（〜2GB）",
+      "data_label": "〜2GB",
+      "data_gb_max": 2,
+      "base_price": 5258,
+      "voice_included": true,
+      "priority": 3,
+      "description": "小容量向け段階制プラン",
+      "family_discount": {
+        "counts_toward_lines": true,
+        "applies_discount": true,
+        "line_tiers": [
+          { "min_lines": 3, "amount": 550 },
+          { "min_lines": 2, "amount": 220 }
+        ]
+      }
+    },
+    {
+      "id": "minifit2_5gb",
+      "name": "ミニフィット2（〜5GB）",
+      "data_label": "〜5GB",
+      "data_gb_max": 5,
+      "base_price": 6358,
+      "voice_included": true,
+      "priority": 4,
+      "description": "中容量向け段階制プラン",
+      "family_discount": {
+        "counts_toward_lines": true,
+        "applies_discount": true,
+        "line_tiers": [
+          { "min_lines": 3, "amount": 550 },
+          { "min_lines": 2, "amount": 220 }
+        ]
+      }
+    }
+  ],
+  "legacy_plans": [
+    { "id": "paytoku_unlimited", "name": "ペイトク無制限", "base_price": 9625 },
+    { "id": "paytoku_50", "name": "ペイトク50", "base_price": 8525 },
+    { "id": "paytoku_30", "name": "ペイトク30", "base_price": 7425 },
+    { "id": "merihari_unlimited_plus", "name": "メリハリ無制限＋", "base_price": 7425 },
+    { "id": "merihari_unlimited", "name": "メリハリ無制限", "base_price": 7238 },
+    { "id": "minifit_plus_1gb", "name": "ミニフィットプラン＋（〜1GB）", "base_price": 3278 },
+    { "id": "minifit_plus_2gb", "name": "ミニフィットプラン＋（〜2GB）", "base_price": 4378 },
+    { "id": "minifit_plus_3gb", "name": "ミニフィットプラン＋（〜3GB）", "base_price": 5478 },
+    { "id": "smartphone_debut_plus", "name": "スマホデビュープラン＋", "base_price": 2266, "family_discount": { "counts_toward_lines": true, "applies_discount": false } }
+  ],
+  "discounts": [
+    {
+      "id": "family_discount",
+      "name": "新みんな家族割",
+      "amount": 1210,
+      "line_tiers": [
+        { "min_lines": 3, "amount": 1210 },
+        { "min_lines": 2, "amount": 660 }
+      ],
+      "condition": "家族3人以上で1人あたり（ミニフィット2は550円）",
+      "includes_primary_line": true,
+      "requirements": {
+        "min_lines": 2
+      }
+    },
+    {
+      "id": "senior_discount",
+      "name": "65歳以上ユーザー割",
+      "amount": 220,
+      "condition": "65歳以上",
+      "requirements": {
+        "age_min": 65
+      }
+    },
+    {
+      "id": "home_fiber_set",
+      "name": "おうち割 光セット",
+      "amount": 1100,
+      "condition": "SoftBank光/Airセット"
+    },
+    {
+      "id": "paypay_card",
+      "name": "PayPayカード割",
+      "amount": 330,
+      "condition": "PayPayカード支払い（ゴールド割と併用不可）",
+      "exclusive_with": ["paypay_card_gold"]
+    },
+    {
+      "id": "paypay_card_gold",
+      "name": "PayPayカード ゴールド割",
+      "amount": 550,
+      "condition": "PayPayカード ゴールド支払い（通常カード割と併用不可）",
+      "exclusive_with": ["paypay_card"]
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "new_family",
+      "name": "新みんな家族割",
+      "description": "家族で加入すると1回線あたり最大1,210円割引"
+    },
+    {
+      "id": "home_set",
+      "name": "おうち割 光セット",
+      "description": "SoftBank光/Airとのセットで最大1,100円割引"
+    },
+    {
+      "id": "paypay_card_discount",
+      "name": "PayPayカード割",
+      "description": "PayPayカード支払いで330〜550円割引"
+    }
+  ]
+}

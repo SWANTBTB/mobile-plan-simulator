@@ -1,0 +1,28 @@
+<section class="shrink-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+  <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
+    <span class="mr-2 flex items-center gap-2">
+      <span class="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</span>
+      <span class="text-[15px] font-bold text-slate-900">携帯会社</span>
+    </span>
+
+    <span class="mx-1 h-6 w-px bg-slate-200"></span>
+
+    {% for carrier in carriers %}
+    <label class="cursor-pointer">
+      <input
+        type="radio"
+        name="carrier"
+        value="{{ carrier.id }}"
+        {% if selected_carrier == carrier.id %}checked{% endif %}
+        class="peer sr-only"
+      />
+      <span class="inline-block rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:font-semibold peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-blue-300">
+        {{ carrier.name }}
+      </span>
+    </label>
+    {% endfor %}
+  </div>
+  <p class="mt-2 text-xs text-slate-500">
+    会社を選ぶと、その1社のプラン・割引・料金を表示します。
+  </p>
+</section>

@@ -1,0 +1,70 @@
+<section class="price-result-section flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm md:col-span-2 lg:col-span-4">
+
+  {% with step=3, title="入力中キャリアの料金内訳", description="選択中キャリア・プランの確認用（還元込み実質料金）" %}
+
+    {% include "components/section_header.html" %}
+
+  {% endwith %}
+
+
+
+  <p
+
+    id="price-error"
+
+    role="alert"
+
+    class="mx-5 mt-4 rounded-lg border px-3 py-2.5 text-[14px]{% if validation_error %} border-red-300 bg-red-50 text-red-700{% else %} hidden border-red-300 bg-red-50 text-red-700{% endif %}"
+
+  >{% if validation_error %}{{ validation_error }}{% endif %}</p>
+
+
+
+  <div class="price-result-scroll simulator-panel-scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
+
+    <div id="price-cards" aria-live="polite" class="p-3"></div>
+
+  </div>
+
+
+
+  <div id="price-total" class="shrink-0 border-t border-slate-200 bg-slate-50 px-4 py-3">
+
+    <div class="flex items-baseline justify-between gap-3">
+
+      <span class="text-[13px] font-semibold text-slate-800">合計（実質）</span>
+
+      <span id="grand-total-monthly" class="text-[22px] font-bold tabular-nums text-slate-900">---円</span>
+
+    </div>
+
+    <p id="grand-total-annual" class="mt-1 text-right text-[13px] font-semibold tabular-nums text-slate-500">年間 ---円</p>
+
+  </div>
+
+
+
+  <div class="shrink-0 border-t border-slate-200 bg-slate-50 px-4 py-2.5">
+
+    <p class="text-[12px] leading-relaxed text-slate-400">※ {{ site_pricing_label }}の公式情報を参照した参考値です。確定料金ではありません。</p>
+
+  </div>
+
+
+
+  <div class="shrink-0 border-t border-slate-200 bg-white px-4 py-4">
+
+    <p class="text-[13px] leading-relaxed text-slate-600">条件が決まったら7社をまとめて比較できます。</p>
+
+    <button
+      type="button"
+      id="compare-navigate-button"
+      class="compare-navigate-button mt-3 w-full rounded-lg bg-blue-600 px-4 py-3 text-[15px] font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+    >
+      7社を比較する
+    </button>
+
+  </div>
+
+</section>
+

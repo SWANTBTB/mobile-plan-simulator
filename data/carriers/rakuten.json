@@ -1,0 +1,111 @@
+{
+  "id": "rakuten",
+  "name": "Rakuten Mobile",
+  "display_order": 7,
+  "official_url": "https://network.mobile.rakuten.co.jp/fee/",
+  "updated_at": "2026-08-21",
+  "source_note": "Rakuten最強プラン。利用量に応じて3段階。金額は税込。",
+  "theme": {
+    "border": "border-carrier-rakuten",
+    "bg": "bg-red-50"
+  },
+  "plans": [
+    {
+      "id": "saikyo_3gb",
+      "name": "Rakuten最強プラン（〜3GB）",
+      "data_label": "〜3GB",
+      "data_gb_max": 3,
+      "base_price": 1078,
+      "voice_included": true,
+      "priority": 1,
+      "description": "3GBまで利用時の料金"
+    },
+    {
+      "id": "saikyo_20gb",
+      "name": "Rakuten最強プラン（3〜20GB）",
+      "data_label": "〜20GB",
+      "data_gb_max": 20,
+      "base_price": 2178,
+      "voice_included": true,
+      "priority": 2,
+      "description": "3GB超〜20GB利用時の料金"
+    },
+    {
+      "id": "saikyo_unlimited",
+      "name": "Rakuten最強プラン（20GB超〜無制限）",
+      "data_label": "無制限",
+      "data_gb_max": null,
+      "base_price": 3278,
+      "voice_included": true,
+      "priority": 3,
+      "description": "20GB超利用時の料金（無制限）"
+    }
+  ],
+  "legacy_plans": [
+    { "id": "un_limit_vii_1gb", "name": "Rakuten UN-LIMIT VII（〜1GB）", "base_price": 0 },
+    { "id": "un_limit_vii_3gb", "name": "Rakuten UN-LIMIT VII（〜3GB）", "base_price": 1078 },
+    { "id": "un_limit_vii_20gb", "name": "Rakuten UN-LIMIT VII（〜20GB）", "base_price": 2178 },
+    { "id": "un_limit_vii_unlimited", "name": "Rakuten UN-LIMIT VII（無制限）", "base_price": 3278 },
+    { "id": "un_limit_vi", "name": "Rakuten UN-LIMIT VI", "base_price": 3278 }
+  ],
+  "discounts": [
+    {
+      "id": "family_discount",
+      "name": "最強家族割",
+      "amount": 110,
+      "condition": "家族2回線以上",
+      "includes_primary_line": true,
+      "requirements": {
+        "min_lines": 2
+      }
+    },
+    {
+      "id": "child_discount",
+      "name": "最強こども割",
+      "amount": 110,
+      "condition": "12歳以下（青春割・シニア割と併用不可）",
+      "exclusive_with": ["youth_discount", "senior_program"],
+      "requirements": {
+        "age_max": 12
+      }
+    },
+    {
+      "id": "youth_discount",
+      "name": "最強青春割",
+      "amount": 110,
+      "condition": "13〜22歳（要エントリー・シニア割と併用不可）",
+      "exclusive_with": ["senior_program", "child_discount"],
+      "requirements": {
+        "age_min": 13,
+        "age_max": 22
+      }
+    },
+    {
+      "id": "senior_program",
+      "name": "最強シニアプログラム",
+      "amount": 110,
+      "condition": "65歳以上（要エントリー・青春割と併用不可）",
+      "exclusive_with": ["youth_discount", "child_discount"],
+      "requirements": {
+        "age_min": 65
+      }
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "rakuten_card",
+      "name": "楽天カード",
+      "description": "楽天経済圏でのポイント還元"
+    },
+    {
+      "id": "rakuten_ichiba",
+      "name": "楽天市場",
+      "description": "SPU等でポイント還元アップ"
+    },
+    {
+      "id": "referral",
+      "name": "紹介キャンペーン",
+      "description": "紹介者・被紹介者双方に特典"
+    }
+  ]
+}

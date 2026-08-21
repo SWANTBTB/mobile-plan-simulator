@@ -1,0 +1,218 @@
+{% set prefix = "lines[" ~ line_index ~ "]" %}
+
+{% set line_result = comparison.lines[line_index] if comparison.lines|length > line_index else none %}
+
+{% set selected_plan_id = line_result.plan.id if line_result else none %}
+
+{% set plan_manual = line_result.plan_manual if line_result else false %}
+
+{% set line_eligibility = discount_amounts.get(line_index, {}) %}
+
+{% set line_discounts = lines[line_index].discounts if lines|length > line_index else [] %}
+
+{% set main_line_family_blocked = family_discount_primary_blocked.get(line_carrier_id, []) %}
+
+
+
+<div
+
+  data-line-panel="{{ line_index }}"
+
+  class="rounded-xl border border-slate-200 p-4 sm:p-5{% if line_index != active_line_index %} hidden{% endif %}"
+
+>
+
+  <div class="mb-2 border-b border-slate-100 pb-2">
+
+    <h3 class="text-[16px] font-bold text-slate-900">{{ carrier.name }} — {% if line_index == 0 %}主回線{% else %}{{ line_index + 1 }}回線目{% endif %}</h3>
+
+    <a
+
+      href="{{ carrier.official_url }}"
+
+      target="_blank"
+
+      rel="noopener noreferrer"
+
+      class="mt-1 inline-flex items-center gap-0.5 text-[12px] text-slate-500 transition hover:text-blue-600 hover:underline"
+
+    >公式料金ページ <span aria-hidden="true">↗</span></a>
+
+  </div>
+
+
+
+  <div data-carrier-plans class="mb-5">
+
+    <div class="mb-1.5 flex items-center justify-between gap-2">
+
+      <p class="text-[15px] font-semibold text-slate-700">料金プラン</p>
+
+      <button type="button" data-auto-plan-line="{{ line_index }}" class="text-[13px] font-medium text-blue-600 transition hover:text-blue-800 hover:underline{% if not plan_manual %} hidden{% endif %}">自動選択に戻す</button>
+
+    </div>
+
+    <div class="space-y-2">
+
+      {% for plan in carrier.plans %}
+
+      {% set is_selected_plan = selected_plan_id == plan.id %}
+
+      {% set is_manual_plan = is_selected_plan and plan_manual %}
+
+      <label
+
+        data-plan-row="{{ line_index }}:{{ plan.id }}"
+
+        data-plan-line="{{ line_index }}"
+
+        data-plan-id="{{ plan.id }}"
+
+        class="flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-3 {% if is_selected_plan %}border-blue-200 bg-blue-50{% else %}border-slate-200 bg-white{% endif %}"
+
+      >
+
+        <input type="radio" name="{{ prefix }}[plan]" value="{{ plan.id }}" {% if is_manual_plan %}checked{% endif %} class="peer sr-only" />
+
+        <span data-plan-marker class="h-2 w-2 shrink-0 rounded-full {% if is_selected_plan %}bg-blue-600{% else %}bg-slate-300{% endif %}"></span>
+
+        <div class="min-w-0 flex-1">
+
+          <p class="truncate text-[15px] font-medium text-slate-800" data-tip="{{ plan.name }}">{{ plan.name }}</p>
+
+          {% if plan.data_label %}<p class="text-[12px] text-slate-500">{{ plan.data_label }}</p>{% endif %}
+
+        </div>
+
+        <span data-plan-auto-badge class="shrink-0 rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-blue-700{% if not is_selected_plan or is_manual_plan %} hidden{% endif %}">自動</span>
+
+        <span data-plan-manual-badge class="shrink-0 rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] font-bold text-white{% if not is_manual_plan %} hidden{% endif %}">選択中</span>
+
+        <span data-plan-short-badge class="hidden shrink-0 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-800">容量不足</span>
+
+        <span class="shrink-0 text-right">
+
+          <span class="block text-[16px] font-bold text-slate-900">{{ "{:,}".format(plan.base_price) }}円</span>
+
+          <span data-plan-effective class="hidden text-[10px] font-medium text-emerald-700"></span>
+
+        </span>
+
+      </label>
+
+      {% endfor %}
+
+    </div>
+
+    {% if carrier.plan_comparison_notes %}
+
+    <div class="plan-comparison-notes">
+
+      <p class="plan-comparison-notes__title">※ {{ carrier.plan_comparison_notes.title }}</p>
+
+      {% for row in carrier.plan_comparison_notes.rows %}
+
+      <p>{{ row.label }}：{{ row.text }}</p>
+
+      {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+  </div>
+
+
+
+  <details class="advanced-details mt-4" data-advanced-details="line-discounts-{{ line_index }}">
+    <summary class="advanced-details__summary">
+      <span class="advanced-details__title">詳細条件（任意）</span>
+      <span class="advanced-details__hint">割引・家族割などの詳細条件</span>
+    </summary>
+    <div class="advanced-details__body mt-3">
+      <p class="mb-2 text-[15px] font-semibold text-slate-700">割引</p>
+
+  <div class="space-y-2">
+
+    {% if carrier.discounts %}
+
+    {% for discount in carrier.discounts %}
+
+    {% set eligible = line_eligibility.get(discount.id, True) %}
+
+    {% set carrier_line_index = line_result.carrier_line_index if line_result else 0 %}
+
+    {% set is_main_blocked = carrier_line_index == 0 and discount.id in main_line_family_blocked %}
+
+    {% if is_main_blocked %}{% set eligible = false %}{% endif %}
+
+    {% set home_set_group = home_set_discount_groups.get(line_carrier_id ~ ':' ~ discount.id) %}
+
+    <div
+
+      data-discount-row="{{ line_index }}:{{ discount.id }}"
+
+      {% if home_set_group %}data-home-set-group="{{ home_set_group }}"{% endif %}
+
+      class="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-3{% if not eligible %} opacity-50{% endif %}"
+
+    >
+
+      <label class="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5">
+
+        <input
+
+          type="checkbox"
+
+          name="{{ prefix }}[discounts]"
+
+          value="{{ discount.id }}"
+
+          {% if discount.id in line_discounts %}checked{% endif %}
+
+          {% if not eligible %}disabled{% endif %}
+
+          class="h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-300"
+
+        />
+
+        <span class="min-w-0 truncate text-[14px] text-slate-800" data-tip="{{ discount.name }}">{{ discount.name }}</span>
+
+      </label>
+
+      <span data-home-set-badge class="hidden shrink-0 rounded bg-sky-100 px-1.5 py-0.5 text-[11px] font-semibold text-sky-800">光セット連動</span>
+
+      {% if is_main_blocked %}
+
+      <span class="shrink-0 rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800">主回線対象外</span>
+
+      {% endif %}
+
+      <span data-ineligible-badge class="shrink-0 rounded bg-slate-200 px-1.5 py-0.5 text-[11px] font-semibold text-slate-600{% if eligible %} hidden{% endif %}">対象外</span>
+
+      <span data-discount-amount class="shrink-0 text-[14px] font-semibold text-emerald-700">-{{ "{:,}".format(line_eligibility.get(discount.id, discount.amount)) }}円/月</span>
+
+      {% with tip_text="適用される条件：" ~ (discount.condition or "条件の記載がありません") %}
+
+        {% include "components/help_tip.html" %}
+
+      {% endwith %}
+
+    </div>
+
+    {% endfor %}
+
+    {% else %}
+
+    <p class="rounded-lg border border-slate-200 px-3 py-3 text-[14px] text-slate-500">定額プランのため割引なし</p>
+
+    {% endif %}
+
+  </div>
+    </div>
+  </details>
+
+
+
+</div>
+

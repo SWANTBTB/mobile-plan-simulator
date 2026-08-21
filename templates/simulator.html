@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+
+
+{% block head %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/simulator-ui.css') }}?v=20260821p8d" />
+
+<script type="application/json" id="simulator-config">{{ simulator_config | tojson }}</script>
+
+{% if initial_comparison %}
+
+<script type="application/json" id="initial-comparison">{{ initial_comparison | tojson }}</script>
+
+{% endif %}
+
+<script defer src="{{ url_for('static', filename='js/simulator-state.js') }}?v=20260821p8d"></script>
+<script defer src="{{ url_for('static', filename='js/simulator.js') }}?v=20260821p8d"></script>
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<main class="simulator-shell mx-auto flex w-full max-w-[1560px] flex-col gap-6 px-5 py-7 sm:px-8 lg:box-border lg:min-h-0 lg:max-h-dvh lg:gap-3 lg:overflow-y-auto lg:px-6 lg:py-4" data-page="simulator">
+
+  <header class="simulator-shell__header shrink-0">
+
+    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+
+      <h1 class="text-[28px] font-bold tracking-tight text-slate-900 lg:text-[22px]">料金シミュレーター</h1>
+
+      <span class="text-[13px] font-medium leading-snug text-slate-500 lg:text-[12px]">（{{ simulator_config.pricing_as_of_label }}）</span>
+
+    </div>
+
+    <p class="mt-1.5 text-[14px] leading-relaxed text-slate-500 lg:mt-1 lg:text-[13px]">利用条件を入力し、選択中キャリアの料金を確認したうえで7ブランドを比較できます</p>
+
+  </header>
+
+
+
+  <form id="simulator-form" class="simulator-form flex min-h-0 flex-1 flex-col gap-6 lg:gap-3">
+
+    <div class="simulator-columns grid min-h-0 grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:flex-1 lg:grid-cols-12 lg:gap-4">
+
+      {% include "components/account_section.html" %}
+
+      {% include "components/campaign_section.html" %}
+
+      {% include "components/price_result.html" %}
+
+    </div>
+
+  </form>
+
+</main>
+
+{% endblock %}

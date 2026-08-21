@@ -1,0 +1,19 @@
+# Render Blueprint — Free Web Service（ポートフォリオ公開用）
+# Dashboard から手動作成する場合も、以下と同等の設定にしてください。
+services:
+  - type: web
+    name: mobile-plan-simulator
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m waitress --listen=0.0.0.0:$PORT wsgi:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: ROBOTS_NOINDEX
+        value: "1"
+      - key: SECRET_KEY
+        generateValue: true
+    healthCheckPath: /

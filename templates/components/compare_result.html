@@ -1,0 +1,62 @@
+<section
+  id="compare-result-section"
+  class="compare-result-section shrink-0 rounded-xl border border-slate-200 bg-white shadow-sm"
+  aria-labelledby="compare-result-heading"
+>
+  <div class="section-header flex shrink-0 items-center gap-3 border-b border-slate-200 px-5 py-4">
+    {% if not compare_page %}
+    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[13px] font-bold text-white">
+      4
+    </span>
+    {% endif %}
+    <div class="min-w-0">
+      <h2 id="compare-result-heading" class="text-[18px] font-bold leading-tight text-slate-900">
+        {% if compare_page %}比較結果{% else %}7社を比較{% endif %}
+      </h2>
+      <p class="mt-1 text-[13px] leading-relaxed text-slate-500">同じ利用条件で、請求額・還元・実質負担を比較します</p>
+    </div>
+  </div>
+
+  {% if not compare_page %}
+  <p class="compare-role-guide mx-5 mt-3 text-[13px] leading-relaxed text-slate-500">
+    上の「入力中キャリアの料金内訳」は選択中プランの確認用です。最終的な7社比較はこの下で確認できます。
+  </p>
+  {% endif %}
+
+  <p
+    id="compare-loading"
+    class="compare-status hidden px-5 py-4 text-[14px] text-slate-600"
+    aria-live="polite"
+  >
+    料金を比較しています...
+  </p>
+
+  <p
+    id="compare-error"
+    role="alert"
+    class="compare-status hidden mx-5 mt-4 rounded-lg border border-red-300 bg-red-50 px-3 py-2.5 text-[14px] text-red-700"
+  >
+    比較結果を取得できませんでした
+  </p>
+
+  <p
+    id="compare-incomplete-banner"
+    role="status"
+    class="compare-status hidden mx-5 mt-4 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2.5 text-[14px] text-amber-900"
+  >
+    一部キャリアの料金を計算できなかったため、完全な比較結果ではありません
+  </p>
+
+  <div id="compare-savings" class="compare-savings hidden border-b border-slate-100 px-5 py-4" aria-live="polite"></div>
+
+  <p
+    id="compare-savings-hint"
+    class="compare-savings-hint hidden border-b border-slate-100 px-5 py-3 text-[13px] leading-relaxed text-slate-500"
+  >
+    現在の月額を入力すると、今よりどれくらい安くなるか比較できます
+  </p>
+
+  <div id="compare-summary" class="compare-summary hidden border-b border-slate-100 px-5 py-4" aria-live="polite"></div>
+
+  <div id="compare-carrier-grid" class="compare-grid p-4" aria-live="polite"></div>
+</section>

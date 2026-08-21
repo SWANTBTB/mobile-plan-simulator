@@ -1,0 +1,611 @@
+/* Phase 2: typography & layout helpers (logic-neutral) */
+
+.section-header {
+  min-height: 5.75rem;
+}
+
+.line-tab-btn {
+  display: flex;
+  min-width: 0;
+  min-height: 2.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  border-radius: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.line-tab-btn--idle {
+  background: rgb(241 245 249);
+  color: rgb(51 65 85);
+}
+
+.line-tab-btn--idle:hover {
+  background: rgb(226 232 240);
+}
+
+.line-tab-btn--active {
+  background: rgb(37 99 235);
+  color: #fff;
+  font-weight: 600;
+}
+
+.line-tab-btn__label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.line-tab-btn__carrier {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+#line-tabs {
+  display: grid;
+  grid-template-columns: repeat(var(--line-tab-columns, 1), minmax(0, 1fr));
+  gap: 0.5rem;
+  min-height: 2.5rem;
+}
+
+#line-tabs.line-tabs--dense .line-tab-btn {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.375rem;
+  font-size: 0.8125rem;
+}
+
+#line-tabs.line-tabs--dense .line-tab-btn:not(.line-tab-btn--active) .line-tab-btn__carrier {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  body:has(.simulator-shell) {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .simulator-columns {
+    align-items: stretch;
+  }
+
+  .simulator-columns > section {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .simulator-shell .section-header {
+    min-height: auto;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .simulator-shell .section-header h2 {
+    font-size: 1rem;
+  }
+
+  .simulator-shell .section-header p {
+    display: none;
+  }
+
+  .simulator-panel-scroll {
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .simulator-panel-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .simulator-panel-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgb(203 213 225);
+  }
+}
+
+.carrier-grid label > span {
+  display: flex;
+  min-height: 2.5rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.375rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+
+@media (min-width: 1024px) {
+  .carrier-grid label > span {
+    font-size: 0.875rem;
+  }
+}
+
+.price-card {
+  border-radius: 0.625rem;
+  border: 1px solid rgb(226 232 240);
+  background: #fff;
+  padding: 0.5rem 0.625rem;
+}
+
+#price-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+#price-cards.price-cards--single .price-card {
+  padding: 0.75rem 0.875rem;
+}
+
+.price-card__body {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.price-card__accent {
+  align-self: stretch;
+  width: 0;
+  flex-shrink: 0;
+  border-left-width: 3px;
+  border-radius: 2px;
+}
+
+.price-card__info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.price-card__headline {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.price-card__carrier {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: rgb(15 23 42);
+}
+
+.price-card__line-label {
+  font-size: 0.75rem;
+  color: rgb(100 116 139);
+}
+
+.price-card__subline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.125rem;
+}
+
+.price-card__plan {
+  min-width: 0;
+  font-size: 0.75rem;
+  color: rgb(100 116 139);
+}
+
+.price-card__annual {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: rgb(100 116 139);
+  font-variant-numeric: tabular-nums;
+}
+
+.price-card__amount-block {
+  flex-shrink: 0;
+  line-height: 1.1;
+  text-align: right;
+}
+
+.price-card__amount {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+  color: rgb(15 23 42);
+  font-variant-numeric: tabular-nums;
+}
+
+.price-card__amount-suffix {
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: rgb(100 116 139);
+}
+
+#price-cards:not(.price-cards--single) .price-card__amount {
+  font-size: 1rem;
+}
+
+#price-cards.price-cards--single .price-card__amount {
+  font-size: 1.375rem;
+}
+
+.price-result-section .section-header {
+  min-height: 4.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+}
+
+.price-result-section .section-header h2 {
+  font-size: 1rem;
+}
+
+.price-result-section .section-header p {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.price-result-section #price-error {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.price-result-section .price-result-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+
+.price-result-section #price-total {
+  flex-shrink: 0;
+}
+
+.input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-with-unit input {
+  flex: 1;
+  min-width: 0;
+  max-width: 6.5rem;
+}
+
+[data-ui-section="qr"] .input-with-unit {
+  width: 100%;
+}
+
+[data-ui-section="qr"] .input-with-unit input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+.input-with-unit .input-unit {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  color: rgb(71 85 105);
+}
+
+.line-card-total {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgb(148 163 184);
+}
+
+.plan-comparison-notes {
+  margin-top: 0.5rem;
+  font-size: 0.625rem;
+  line-height: 1.45;
+  color: rgb(148 163 184);
+}
+
+.plan-comparison-notes p + p {
+  margin-top: 0.125rem;
+}
+
+.plan-comparison-notes__title {
+  margin-bottom: 0.125rem;
+}
+
+.simulator-shell {
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.simulator-shell .simulator-form {
+  gap: 0.5rem;
+}
+
+.simulator-shell .simulator-columns {
+  gap: 0.75rem;
+}
+
+.simulator-shell .simulator-shell__header h1 {
+  font-size: 1.125rem;
+  line-height: 1.25;
+}
+
+.simulator-shell .simulator-shell__header p {
+  display: none;
+}
+
+.simulator-shell .section-header {
+  min-height: auto;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.simulator-shell .section-header > span {
+  height: 1.5rem;
+  width: 1.5rem;
+  font-size: 0.6875rem;
+}
+
+.simulator-shell .section-header h2 {
+  font-size: 0.875rem;
+}
+
+.simulator-shell .section-header p {
+  display: none;
+}
+
+.simulator-shell .simulator-panel-scroll {
+  padding: 0.75rem !important;
+}
+
+.simulator-shell .simulator-panel-scroll > * + * {
+  margin-top: 0.75rem !important;
+}
+
+.simulator-shell #campaign-panels > * + * {
+  margin-top: 0.5rem !important;
+}
+
+.simulator-shell h3 {
+  font-size: 0.875rem;
+}
+
+.simulator-shell label.block {
+  margin-bottom: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.simulator-shell input[type="number"],
+.simulator-shell input[type="text"],
+.simulator-shell select {
+  height: 2.25rem;
+  min-height: 2.25rem;
+  font-size: 0.8125rem;
+}
+
+.simulator-shell .carrier-grid label > span {
+  min-height: 2rem;
+  padding: 0.25rem 0.25rem;
+  font-size: 0.75rem;
+}
+
+.simulator-shell .line-tab-btn {
+  min-height: 2rem;
+  padding: 0.25rem 0.375rem;
+  font-size: 0.75rem;
+}
+
+.simulator-shell [data-ui-section="home_set"] label.rounded-lg {
+  padding: 0.5rem 0.625rem;
+}
+
+.simulator-shell [data-line-panel] {
+  padding: 0.75rem;
+}
+
+.simulator-shell [data-line-card] {
+  padding: 0.75rem;
+}
+
+.simulator-shell [data-plan-row],
+.simulator-shell [data-discount-row] {
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.simulator-shell [data-plan-row] p,
+.simulator-shell [data-discount-row] p {
+  font-size: 0.8125rem;
+}
+
+.simulator-shell [data-plan-row] .font-bold,
+.simulator-shell [data-discount-row] .font-bold {
+  font-size: 0.875rem;
+}
+
+.simulator-shell [data-carrier-plans] {
+  margin-bottom: 0.75rem;
+}
+
+.simulator-shell .price-card {
+  padding: 0.375rem 0.5rem;
+}
+
+.simulator-shell #price-cards {
+  gap: 0.25rem;
+  padding: 0.5rem !important;
+}
+
+.simulator-shell .price-card__amount {
+  font-size: 0.9375rem;
+}
+
+.simulator-shell #price-cards.price-cards--single .price-card__amount {
+  font-size: 1.125rem;
+}
+
+.simulator-shell #price-total {
+  padding: 0.75rem;
+}
+
+.simulator-shell #grand-total-monthly {
+  font-size: 1.125rem;
+}
+
+@media (min-width: 1024px) {
+  .simulator-shell {
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .simulator-shell .simulator-columns {
+    gap: 0.5rem;
+  }
+}
+
+/* Phase 6A: cross-carrier compare results */
+.compare-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .compare-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .compare-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .compare-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.compare-card {
+  min-width: 0;
+}
+
+.compare-card--error {
+  border-left-width: 3px;
+}
+
+.compare-card__effective-amount {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.compare-card__billing-amount {
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
+
+.compare-card__reward-total-amount {
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+.compare-summary__split,
+.compare-summary__combined {
+  width: 100%;
+}
+
+.advanced-details {
+  border: 1px solid rgb(226 232 240);
+  border-radius: 0.75rem;
+  background: rgb(248 250 252);
+}
+
+.advanced-details__summary {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  cursor: pointer;
+  list-style: none;
+  padding: 0.875rem 2rem 0.875rem 1rem;
+  border-radius: 0.75rem;
+}
+
+.advanced-details__summary::-webkit-details-marker {
+  display: none;
+}
+
+.advanced-details__summary::before {
+  content: "▶";
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  font-size: 0.75rem;
+  color: rgb(100 116 139);
+  transition: transform 0.15s ease;
+}
+
+.advanced-details[open] > .advanced-details__summary::before {
+  transform: rotate(90deg);
+}
+
+.advanced-details__summary:focus-visible {
+  outline: 2px solid rgb(59 130 246);
+  outline-offset: 2px;
+}
+
+.advanced-details__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(15 23 42);
+}
+
+.advanced-details__hint {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: rgb(100 116 139);
+}
+
+.advanced-details__body {
+  border-top: 1px solid rgb(226 232 240);
+  padding: 0.875rem 1rem 1rem;
+}
+
+.compare-page-shell .compare-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .compare-page-shell .compare-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .compare-page-shell .compare-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .compare-page-shell .compare-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.compare-navigate-button:disabled {
+  opacity: 0.7;
+}

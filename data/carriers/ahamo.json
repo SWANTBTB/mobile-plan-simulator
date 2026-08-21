@@ -1,0 +1,60 @@
+{
+  "id": "ahamo",
+  "name": "ahamo",
+  "display_order": 6,
+  "parent_carrier": "docomo",
+  "official_url": "https://ahamo.com/plan/index.html",
+  "updated_at": "2026-08-21",
+  "source_note": "オンライン専用プラン。金額は税込。割引プランなし。",
+  "theme": {
+    "border": "border-indigo-500",
+    "bg": "bg-indigo-50"
+  },
+  "plans": [
+    {
+      "id": "ahamo_30gb",
+      "name": "ahamo（30GB）",
+      "data_label": "30GB",
+      "data_gb_max": 30,
+      "base_price": 2970,
+      "voice_included": true,
+      "priority": 1,
+      "description": "5分以内国内通話無料込み",
+      "everyone_docomo": {
+        "counts_toward_lines": true,
+        "applies_discount": false
+      }
+    },
+    {
+      "id": "ahamo_110gb",
+      "name": "ahamo大盛り（110GB）",
+      "data_label": "110GB",
+      "data_gb_max": 110,
+      "base_price": 4950,
+      "voice_included": true,
+      "priority": 2,
+      "description": "大盛りオプション込み",
+      "everyone_docomo": {
+        "counts_toward_lines": true,
+        "applies_discount": false
+      }
+    }
+  ],
+  "legacy_plans": [
+    { "id": "ahamo_20gb", "name": "ahamo（20GB）", "base_price": 2970 },
+    { "id": "ahamo_100gb", "name": "ahamo大盛り（100GB）", "base_price": 4950 }
+  ],
+  "discounts": [],
+  "campaigns": [
+    {
+      "id": "omori",
+      "name": "ahamo大盛り",
+      "description": "80GB追加で110GB利用（+1,980円/月）"
+    },
+    {
+      "id": "dpoint_campaign",
+      "name": "dポイントキャンペーン",
+      "description": "乗り換え等で期間限定ポイント付与"
+    }
+  ]
+}
