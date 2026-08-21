@@ -140,17 +140,60 @@ project/
 └── tests/
 ```
 
-## デプロイ候補（未実施 — 参考）
+## デプロイ（Render Free — ポートフォリオ公開）
 
-公開先未確定のため、実デプロイは行っていません。Flask + HTTPS + 環境変数対応の例:
+**方針**: 月額 0 円・15 分アイドルで spin down（初回アクセス ~1 分）を許容。ping bot 等は使わない。
 
-| サービス | 特徴 |
+### 前提
+
+1. [Git for Windows](https://git-scm.com/download/win) 導入済み
+2. [GitHub](https://github.com) アカウント
+3. [Render](https://render.com) アカウント（GitHub 連携）
+
+### 1. GitHub に push
+
+```powershell
+cd C:\Users\GUTITUBO-PC\Downloads\project
+git remote add origin https://github.com/<YOUR_USER>/mobile-plan-simulator.git
+git push -u origin main
+```
+
+（Private リポジトリ推奨）
+
+### 2. Render Web Service 作成
+
+Dashboard → **New +** → **Blueprint**（`render.yaml` 利用）または **Web Service**（GitHub リポジトリ連携）
+
+| 項目 | 値 |
 |---|---|
-| **Render** | Git 連携、無料枠あり、HTTPS 自動 |
-| **Railway** | 環境変数・PORT 対応、手軽 |
-| **Fly.io** | リージョン選択可、スケールしやすい |
+| **Plan** | Free |
+| **Runtime** | Python 3 |
+| **Build Command** | `pip install -r requirements.txt` |
+| **Start Command** | `python -m waitress --listen=0.0.0.0:$PORT wsgi:app` |
+| **Health Check** | `/` |
 
-いずれも `waitress` または `gunicorn` + `wsgi:app` を想定。
+### 3. 環境変数
+
+| 変数 | 値 |
+|---|---|
+| `FLASK_ENV` | `production` |
+| `FLASK_DEBUG` | `0` |
+| `SECRET_KEY` | Render の **Generate** またはランダム文字列 |
+| `ROBOTS_NOINDEX` | `1`（動作確認期間。提出のみならこのままで可） |
+
+`render.yaml` を Blueprint デプロイすると `SECRET_KEY` は自動生成されます。
+
+### 4. 公開 URL
+
+`https://<service-name>.onrender.com` を履歴書・職務経歴書に記載。
+
+### 注意（Free プラン）
+
+- 15 分間アクセスがないと **spin down**
+- 次回アクセス時に **約 1 分** で起動
+- 月 750 instance hours 上限
+
+---
 
 ## 注意
 
