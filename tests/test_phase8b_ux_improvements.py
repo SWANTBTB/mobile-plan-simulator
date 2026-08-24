@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -13,6 +14,8 @@ COMPARE_UI_JS = ROOT / "static" / "js" / "compare-ui.js"
 
 
 def _run_compare_ui_script(script: str) -> str:
+    if shutil.which("node") is None:
+        pytest.skip("Node.js not available")
     wrapped = f"""
     const fs = require('fs');
     const code = fs.readFileSync({json.dumps(str(COMPARE_UI_JS))}, 'utf8');
@@ -29,15 +32,22 @@ def _run_compare_ui_script(script: str) -> str:
         check=False,
     )
     if result.returncode != 0:
-        pytest.skip(f"Node.js unavailable or script failed: {result.stderr}")
+        details = "\n".join(
+            part
+            for part in (
+                f"exit code: {result.returncode}",
+                f"stdout:\n{result.stdout.strip()}" if result.stdout.strip() else "",
+                f"stderr:\n{result.stderr.strip()}" if result.stderr.strip() else "",
+            )
+            if part
+        )
+        pytest.fail(f"Compare UI script failed:\n{details}")
     return result.stdout.strip()
 
 
 @pytest.fixture
 def node_available():
-    try:
-        subprocess.run(["node", "-v"], capture_output=True, check=True)
-    except (FileNotFoundError, subprocess.CalledProcessError):
+    if shutil.which("node") is None:
         pytest.skip("Node.js not available")
 
 
@@ -65,48 +75,25 @@ def test_no_legacy_bundled_value_user_label(client):
 
 
 def test_billing_visible_near_effective_on_card(node_available):
+    """同一プラン unified カードで、実質負担の直下に請求額が表示されること。"""
     entry = {
         "carrier_id": "softbank",
         "carrier_name": "SoftBank",
         "status": "ok",
-        "billing_total": 8008,
+        "billing_total": 7018,
         "reward_total": 4000,
-        "effective_total": 6538,
+        "effective_total": 3018,
         "bundled_value": 0,
-        "value_adjusted_total": 6538,
-        "axis_quotes": {
-            "billing": {
-                "plan_id": "teigaku_unlimited",
-                "plan_name": "テイガク（使った分だけ）",
-                "plan_ids": ["teigaku_unlimited"],
-                "billing_total": 8008,
-                "reward_total": 0,
-                "effective_total": 8008,
-                "value_adjusted_total": 8008,
-                "lines": [{"plan_id": "teigaku_unlimited", "plan_name": "テイガク（使った分だけ）", "rewards": []}],
-            },
-            "effective": {
+        "value_adjusted_total": 3018,
+        "lines": [
+            {
                 "plan_id": "paytoku2",
                 "plan_name": "ペイトク2",
-                "plan_ids": ["paytoku2"],
-                "billing_total": 10538,
-                "reward_total": 4000,
-                "effective_total": 6538,
-                "value_adjusted_total": 6538,
-                "lines": [{"plan_id": "paytoku2", "plan_name": "ペイトク2", "rewards": []}],
-            },
-            "value_adjusted": {
-                "plan_id": "paytoku2",
-                "plan_name": "ペイトク2",
-                "plan_ids": ["paytoku2"],
-                "billing_total": 10538,
-                "reward_total": 4000,
-                "effective_total": 6538,
-                "value_adjusted_total": 6538,
-                "lines": [{"plan_id": "paytoku2", "plan_name": "ペイトク2", "rewards": []}],
-            },
-        },
-        "lines": [{"plan_name": "ペイトク2", "rewards": [], "applied_discounts": [], "bundled_services": []}],
+                "rewards": [{"id": "qr_reward", "type": "POINT", "name": "PayPay還元", "amount": 4000}],
+                "applied_discounts": [],
+                "bundled_services": [],
+            }
+        ],
         "strengths": [],
         "cautions": [],
     }
@@ -119,7 +106,7 @@ def test_billing_visible_near_effective_on_card(node_available):
         if (effectiveIdx < 0 || billingIdx < 0) process.exit(2);
         if (billingIdx <= effectiveIdx) process.exit(3);
         if (!html.includes('compare-card__billing-amount')) process.exit(4);
-        if (!html.includes('8,008円')) process.exit(5);
+        if (!html.includes('7,018円')) process.exit(5);
         console.log('ok');
         """
     )

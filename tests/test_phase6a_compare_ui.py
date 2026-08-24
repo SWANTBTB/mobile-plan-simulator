@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -43,6 +44,8 @@ def _sample_entry(**overrides):
 
 
 def _run_compare_ui_script(script: str) -> str:
+    if shutil.which("node") is None:
+        pytest.skip("Node.js not available")
     wrapped = f"""
     const fs = require('fs');
     const code = fs.readFileSync({json.dumps(str(COMPARE_UI_JS))}, 'utf8');
@@ -59,15 +62,22 @@ def _run_compare_ui_script(script: str) -> str:
         check=False,
     )
     if result.returncode != 0:
-        pytest.skip(f"Node.js unavailable or script failed: {result.stderr}")
+        details = "\n".join(
+            part
+            for part in (
+                f"exit code: {result.returncode}",
+                f"stdout:\n{result.stdout.strip()}" if result.stdout.strip() else "",
+                f"stderr:\n{result.stderr.strip()}" if result.stderr.strip() else "",
+            )
+            if part
+        )
+        pytest.fail(f"Compare UI script failed:\n{details}")
     return result.stdout.strip()
 
 
 @pytest.fixture
 def node_available():
-    try:
-        subprocess.run(["node", "-v"], capture_output=True, check=True)
-    except (FileNotFoundError, subprocess.CalledProcessError):
+    if shutil.which("node") is None:
         pytest.skip("Node.js not available")
 
 
@@ -193,7 +203,7 @@ def test_render_strengths_and_cautions(node_available):
     out = _run_compare_ui_script(
         f"""
         const html = CompareUI.renderCarrierCard({entry_json}, {{}}, {{}});
-        if (!html.includes('あなたの条件での強み')) process.exit(2);
+        if (!html.includes('あなたの条件での特徴')) process.exit(2);
         if (!html.includes('注意点')) process.exit(3);
         console.log('ok');
         """
