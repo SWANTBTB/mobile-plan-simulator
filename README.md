@@ -133,19 +133,38 @@ templates / static/js（表示）
 
 ## テスト
 
+GitHub Actions 上で **Python 3.13 + Node.js 22** を使用した自動テストを実行しています。Python 側の料金計算・API テストに加え、Node.js による比較 UI / DOM 表示テストも含めて全件実行しています。
+
+変更による料金計算や比較結果の回帰を防ぐため、`main` ブランチへの push / pull request 時に [GitHub Actions](https://github.com/SWANTBTB/mobile-plan-simulator/actions/workflows/tests.yml) で自動テストを実行しています。
+
+**GitHub Actions 実行結果（2026-08-24 時点）**
+
+| 結果 | 件数 |
+|---|---|
+| PASS | **375** |
+| SKIP | **0** |
+| FAIL | **0** |
+
+**主なテスト対象**
+
+- 基本料金・料金段階
+- 家族割・セット割・カード割
+- ポイント / CASH 還元
+- 複数回線・世帯合計
+- billing / effective / value_adjusted の責務分離
+- 7 ブランド横断比較
+- ブランド内 3 軸最適化
+- current savings（現在契約との差額）
+- 比較 UI / DOM 表示
+- エラー処理・本番設定
+
+**ローカル実行**
+
 ```powershell
 python -m pytest -q
 ```
 
-**実行結果（2026-08-24 時点）**
-
-| 結果 | 件数 |
-|---|---|
-| PASS | **342** |
-| SKIP | **33** |
-| FAIL | **0** |
-
-SKIP 33 件は、Node.js 未導入環境での UI DOM レンダリングテストです。料金計算・API のテストはすべて PASS しています。
+ローカルに Node.js がない場合、UI DOM テストは SKIP されます。CI では Node.js 22 により全件実行されます。
 
 ---
 
@@ -207,7 +226,7 @@ python app.py
 - 通常ポイント還元ロジックの拡張
 - 決済方法条件の詳細化
 - 料金 JSON の定期更新運用
-- Node.js 導入による UI DOM テストの CI 実行
+- ローカル環境での UI DOM テスト実行（Node.js セットアップ）
 - 複数回線・多軸探索時のパフォーマンス改善
 
 ---
