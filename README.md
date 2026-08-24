@@ -1,84 +1,133 @@
-# 料金比較シミュレーター
+# 携帯料金比較シミュレーター
+**Mobile Plan Simulator**
 
-利用状況・割引条件・決済還元をもとに、主要7ブランド（SoftBank / ワイモバイル / au / UQ mobile / docomo / ahamo / Rakuten Mobile）の携帯料金を、**請求額 / 還元込み実質 / 付帯サービス込み** の3軸で比較する Flask アプリです。
+---
+
+## 公開デモ
+
+**https://mobile-plan-simulator.onrender.com**
+
+Render Free で公開しています。一定時間アクセスがないとサービスがスリープし、初回表示に数十秒〜1分程度かかる場合があります。
+
+---
+
+## 概要
+
+SoftBank / ワイモバイル / au / UQ mobile / docomo / ahamo / Rakuten Mobile の **7ブランド** について、利用条件から料金を計算・横断比較する Web アプリです。
+
+基本料金表の並べ替えではなく、次のような条件を組み合わせて評価します。
+
+- データ使用量・年齢
+- 単回線 / 複数回線
+- 家族割・セット割・カード割
+- QR 決済利用額とポイント / キャッシュ還元
+- プラン込みの付帯サービス価値
+
+入力ページでは選択中キャリアの料金内訳を確認でき、比較ページでは 7 社を同一条件で並べて確認できます。
+
+---
+
+## 制作背景
+
+携帯料金は、基本料金・各種割引・家族構成・決済方法・ポイント還元・付帯サービスが重なり、単純な料金表だけでは比較しづらい領域です。
+
+本プロジェクトでは、**同じ利用条件を入力するだけで複数ブランドを横断比較できるシミュレーター** を Flask で実装しました。料金データは JSON で管理し、計算ロジックと表示処理を分離してテスト可能な構成にしています。
+
+---
 
 ## 主な機能
 
-- **複数回線** — 回線ごとにキャリア・プラン・割引を個別入力
-- **STEP3（入力中キャリア）** — 利用条件を満たす中から **請求額（billing_total）最安** の代表プランを自動選択
-- **7社比較** — 各ブランド内で billing / effective / value_adjusted を **独立最適化**（`axis_quotes`）
-- **現在の契約** — 実際の月額との差額（請求額基準の `savings_summary`）
-- **QR決済還元** — PayPay / d払い / au PAY 等
-- **家族割・セット割** — 世帯構成を考慮した組み合わせ探索
-- **URL / sessionStorage** — 入力条件の共有・比較ページへの受け渡し
+実装済みの機能のみを記載しています。
 
-## 計算指標（ユーザー向け）
-
-| 内部名 | 意味 |
+| カテゴリ | 内容 |
 |---|---|
-| `billing_total` | **実際の請求額**（基本料金 − 請求時割引。ポイント還元は含まない） |
-| `reward_total` | **還元合計**（POINT + CASH のみ） |
-| `effective_total` | **還元込み実質負担** = max(0, 請求額 − 還元) |
-| `value_adjusted_total` | **付帯サービス込み比較額** = max(0, 実質 − 込み特典価値) |
+| **7ブランド横断比較** | 同一条件で全キャリアを並列評価 |
+| **単回線 / 複数回線** | 回線ごとにキャリア・プラン・割引を個別指定（最大 10 回線） |
+| **年齢条件** | 回線ごとの年齢に応じたプラン・割引の適用可否 |
+| **データ使用量** | 容量に応じたプラン自動選択（手動指定も可） |
+| **家族割** | キャリアごとの世帯回線数を考慮した割引 |
+| **セット割** | 光回線セット割などの一括 ON/OFF |
+| **カード割** | PayPay カード等の条件 |
+| **QR 決済還元** | PayPay / d払い / au PAY 等の月間利用額から還元を概算 |
+| **現在料金との比較** | 入力した月額と最安候補の差額（請求額基準） |
+| **3軸比較** | 請求額 / 還元込み実質 / 付帯価値込みの独立最適化 |
+| **ブランド内プラン最適化** | 同一ブランドでも評価軸ごとに最適プランが異なる場合を表示 |
+| **入力条件の共有** | URL クエリおよび sessionStorage による条件の引き継ぎ |
 
-## 技術構成
+---
 
-- **Python 3.14**（開発・テストで使用。3.12 以上を推奨）
-- **Flask** + **Jinja2**
-- **Tailwind CSS**（CDN — 本番でも現行構成で利用。ビルド環境は不要）
-- **JSON** 料金データ（`data/carriers/*.json`）
-- **pytest** による計算・API テスト
-- 本番: **waitress**（WSGI。Windows / Linux 両対応）
+## 3軸比較
 
-## セットアップ
+本アプリの特徴は、次の 3 指標を **分離して計算・最適化** している点です。
 
-```powershell
-cd project
-python -m pip install -r requirements.txt
+```
+請求額（billing_total）
+  ↓  ポイント・キャッシュ還元を差し引く
+還元込み実質負担（effective_total）
+  ↓  付帯サービス価値を差し引く
+付帯価値込み参考値（value_adjusted_total）
 ```
 
-任意: `.env.example` を `.env` にコピーして環境変数を設定。
+| 指標 | 意味 |
+|---|---|
+| **請求額** | 実際の請求ベース（基本料金 − 請求時割引。還元は含まない） |
+| **還元込み実質負担** | 請求額 − ポイント / キャッシュ還元 |
+| **付帯価値込み参考値** | 実質負担 − プラン込み特典の参考価値 |
 
-## 起動
+比較ページでは、各ブランド内で上記 3 軸それぞれ **独立して最安プラン構成** を探索します。同一ブランドでも軸によって最適プランが異なる場合（例: SoftBank で請求額最安と還元込み最安が別プラン）は、軸ごとに分けて表示します。異なる軸の値を同一プラン結果として混在させない設計です。
 
-### 開発（Flask 組み込みサーバー）
+入力ページ（STEP3）では、選択中キャリアの代表として **請求額最安プラン** を 1 件表示します。
 
-```powershell
-python app.py
+---
+
+## 技術スタック
+
+| レイヤ | 技術 |
+|---|---|
+| **Backend** | Python, Flask |
+| **Frontend** | HTML, JavaScript, Tailwind CSS（CDN） |
+| **Template** | Jinja2 |
+| **Server** | Waitress（WSGI） |
+| **Hosting** | Render（Free Web Service） |
+| **Testing** | pytest |
+| **Version Control** | Git / GitHub |
+| **Data** | JSON（`data/carriers/`） |
+
+---
+
+## システム構成
+
+```
+Browser（入力 / 比較 UI）
+    ↓  HTTP
+Flask（app.py）
+    ↓
+services/calculator.py（料金計算・比較エンジン）
+    ↓
+data/carriers/*.json（各社プラン・割引・還元定義）
+    ↓
+計算結果（JSON）
+    ↓
+templates / static/js（表示）
 ```
 
-または `start.bat` をダブルクリック。
+- **入力ページ** — `/` … `/api/calculate` で選択中キャリアの料金を計算
+- **比較ページ** — `/compare` … `/api/compare` で 7 社横断比較
+- **永続 DB なし** — 入力内容はサーバーに保存せず、比較条件はブラウザの sessionStorage に一時保持
 
-- デフォルト: `http://127.0.0.1:5000`
-- `FLASK_ENV=development`（デフォルト）、`DEBUG=True`
+---
 
-### 本番（waitress — 開発サーバーを本番利用しない）
+## 技術的に工夫した点
 
-```powershell
-$env:FLASK_ENV = "production"
-$env:SECRET_KEY = "長いランダム文字列"
-$env:PORT = "5000"
-python -m waitress --listen=0.0.0.0:5000 wsgi:app
-```
+- **料金計算と表示の分離** — 計算は Python（`calculator.py`）、比較 UI は API 返却値をそのまま描画（フロントでの再計算なし）
+- **料金データの JSON 管理** — 金額・割引条件をコードにハードコードせず、キャリア JSON を単一情報源とする
+- **複数回線の世帯評価** — 家族割など回線数依存の割引を、リクエスト内の回線構成から集計
+- **ブランド内のプラン組み合わせ探索** — 複数回線時は eligible なプラン構成を評価し、軸ごとに最適解を選択
+- **3 軸の独立最適化** — billing / effective / value_adjusted を別々に最適化し、`axis_quotes` として API 返却
+- **軸間の混在防止** — 比較結果のトップレベル各フィールドは、対応する軸の quote と整合
+- **テストによる回帰防止** — 料金計算・API・3 軸選択・現行契約差額などを pytest で検証
 
-Linux 等で gunicorn を使う場合:
-
-```bash
-export FLASK_ENV=production
-export SECRET_KEY='...'
-gunicorn -w 2 -b 0.0.0.0:5000 wsgi:app
-```
-
-## 環境変数
-
-| 変数 | 説明 | 開発デフォルト |
-|---|---|---|
-| `FLASK_ENV` | `development` / `production` | `development` |
-| `FLASK_DEBUG` | 開発時デバッグ（本番では無効） | `1` |
-| `SECRET_KEY` | Flask 署名用（**本番必須**） | 開発用ダミー |
-| `HOST` | `python app.py` の bind アドレス | `127.0.0.1` |
-| `PORT` | ポート | `5000` |
-| `ROBOTS_NOINDEX` | `1` で noindex | 開発時 `1` |
+---
 
 ## テスト
 
@@ -86,115 +135,87 @@ gunicorn -w 2 -b 0.0.0.0:5000 wsgi:app
 python -m pytest -q
 ```
 
-### Node.js UI テスト（任意）
+**実行結果（2026-08-24 時点）**
 
-33 件の DOM レンダリングテストは **Node.js 必須**（本番実行には不要）。
+| 結果 | 件数 |
+|---|---|
+| PASS | **342** |
+| SKIP | **33** |
+| FAIL | **0** |
 
-```powershell
-# Node.js インストール後
-python -m pytest tests/test_phase6a_compare_ui.py -q
-```
+SKIP 33 件は、Node.js 未導入環境での UI DOM レンダリングテストです。料金計算・API のテストはすべて PASS しています。
 
-## 料金基準日
-
-各キャリア JSON の `updated_at` から自動生成（現行: **2026年8月21日時点**）。
-UI フッターおよび STEP3 付近に表示。
-
-## データ更新
-
-`data/carriers/*.json` を編集。金額はコードにハードコードせず JSON のみで管理。
-改定時は `updated_at` と `source_note` も更新。
-
-## データの保存について
-
-- **サーバー**: 入力内容を DB 等へ永続保存しない（リクエスト処理のみ）
-- **ブラウザ**: 比較条件は **sessionStorage**（タブ内一時保存）
-
-## 既知の制約
-
-- 一部の通常ポイント還元は未計算
-- 期間限定キャンペーンは完全再現しない
-- PayPay GOLD 連携の翌月適用等、細かい適用タイミング差は簡略化
-- Rakuten 利用料ポイントは税別換算
-- 料金は基準日時点の参考値（契約確定料金ではない）
-
-## API
-
-- `GET|POST /api/calculate` — 入力中キャリアの料金計算
-- `GET|POST /api/compare` — 7社横断比較（3軸）
-- `GET /api/carriers` — キャリア JSON + UI 設定
-
-不正入力は `400` + `{"error":"invalid_request",...}`。内部エラーは traceback を返さない。
+---
 
 ## ディレクトリ構成
 
 ```
-project/
-├── app.py              # Flask アプリ
-├── config.py           # 環境別設定
-├── wsgi.py             # 本番 WSGI エントリ
-├── data/carriers/      # 料金 JSON
-├── services/           # 計算・説明文
-├── static/js/          # フロントエンド
-├── templates/          # Jinja2
-└── tests/
+├── app.py                 # Flask ルーティング・API
+├── config.py              # 環境別設定
+├── wsgi.py                # 本番 WSGI エントリ
+├── render.yaml            # Render デプロイ定義
+├── requirements.txt
+├── services/
+│   ├── calculator.py      # 料金計算・3軸比較エンジン
+│   ├── carrier_explanation.py
+│   ├── current_savings.py
+│   └── data_loader.py
+├── data/carriers/         # 各社料金 JSON
+├── templates/             # Jinja2 テンプレート
+├── static/js/             # フロントエンド
+└── tests/                 # pytest
 ```
-
-## デプロイ（Render Free — ポートフォリオ公開）
-
-**方針**: 月額 0 円・15 分アイドルで spin down（初回アクセス ~1 分）を許容。ping bot 等は使わない。
-
-### 前提
-
-1. [Git for Windows](https://git-scm.com/download/win) 導入済み
-2. [GitHub](https://github.com) アカウント
-3. [Render](https://render.com) アカウント（GitHub 連携）
-
-### 1. GitHub に push
-
-```powershell
-cd C:\Users\GUTITUBO-PC\Downloads\project
-git remote add origin https://github.com/<YOUR_USER>/mobile-plan-simulator.git
-git push -u origin main
-```
-
-（Private リポジトリ推奨）
-
-### 2. Render Web Service 作成
-
-Dashboard → **New +** → **Blueprint**（`render.yaml` 利用）または **Web Service**（GitHub リポジトリ連携）
-
-| 項目 | 値 |
-|---|---|
-| **Plan** | Free |
-| **Runtime** | Python 3 |
-| **Build Command** | `pip install -r requirements.txt` |
-| **Start Command** | `python -m waitress --listen=0.0.0.0:$PORT wsgi:app` |
-| **Health Check** | `/` |
-
-### 3. 環境変数
-
-| 変数 | 値 |
-|---|---|
-| `FLASK_ENV` | `production` |
-| `FLASK_DEBUG` | `0` |
-| `SECRET_KEY` | Render の **Generate** またはランダム文字列 |
-| `ROBOTS_NOINDEX` | `1`（動作確認期間。提出のみならこのままで可） |
-
-`render.yaml` を Blueprint デプロイすると `SECRET_KEY` は自動生成されます。
-
-### 4. 公開 URL
-
-`https://<service-name>.onrender.com` を履歴書・職務経歴書に記載。
-
-### 注意（Free プラン）
-
-- 15 分間アクセスがないと **spin down**
-- 次回アクセス時に **約 1 分** で起動
-- 月 750 instance hours 上限
 
 ---
 
-## 注意
+## ローカル実行
 
-料金・割引・還元条件は変更される場合があります。**契約前に各社公式サイトで最新条件を確認してください。**
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python app.py
+```
+
+ブラウザで http://127.0.0.1:5000 を開きます。
+
+環境変数の例は `.env.example` を参照してください。本番用の `SECRET_KEY` 等の実値は README には記載しません。
+
+---
+
+## 本番環境
+
+- **Hosting**: Render Free Web Service
+- **Process**: Waitress（`wsgi:app`）
+- **URL**: https://mobile-plan-simulator.onrender.com
+
+---
+
+## 注意事項
+
+- **料金基準日**: 2026年8月21日時点（各キャリア JSON の `updated_at` に基づく）
+- 本アプリの結果は **参考値** です。契約時の確定料金ではありません
+- 料金・割引・キャンペーン・還元条件は変更される場合があります。**契約前に各社公式サイトで最新条件を確認してください**
+- 一部の期間限定キャンペーン、通常ポイント還元、決済方法の細分化などは簡略化または未対応です
+
+---
+
+## 今後の改善候補
+
+- 通常ポイント還元ロジックの拡張
+- 決済方法条件の詳細化
+- 料金 JSON の定期更新運用
+- Node.js 導入による UI DOM テストの CI 実行
+- 複数回線・多軸探索時のパフォーマンス改善
+
+---
+
+## API（参考）
+
+| エンドポイント | 用途 |
+|---|---|
+| `GET\|POST /api/calculate` | 入力中キャリアの料金計算 |
+| `GET\|POST /api/compare` | 7 社横断比較（3 軸） |
+| `GET /api/carriers` | キャリア JSON と UI 設定 |
+
+不正入力は HTTP 400 で JSON エラーを返します。
