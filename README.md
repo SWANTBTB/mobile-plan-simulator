@@ -1,6 +1,8 @@
 # 携帯料金比較シミュレーター
 **Mobile Plan Simulator**
 
+[![Tests](https://github.com/SWANTBTB/mobile-plan-simulator/actions/workflows/tests.yml/badge.svg)](https://github.com/SWANTBTB/mobile-plan-simulator/actions/workflows/tests.yml)
+
 ---
 
 ## 公開デモ
